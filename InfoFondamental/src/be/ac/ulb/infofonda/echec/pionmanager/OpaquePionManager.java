@@ -21,8 +21,10 @@ public abstract class OpaquePionManager extends PionManager {
      * 
      * @param currentLigne la ligne de la case que l'on observe
      * @param currentColonne la colonne de la case que l'on observe
-     * @param currentDecalageLigne le déclage de la ligne observée
+     * @param currentDecalageLigne le déclage de la ligne observée 
+     *  (la où se trouve potentiellement le pion actuel)
      * @param currentDecalageColonne le décalage de la colonne observée
+     *  (la où se trouve potentiellement le pion actuel)
      * @return la liste des cases qui doivent être vides
      */
     protected abstract ArrayList<Integer[]> getEmptyCase(int currentLigne, int currentColonne,

@@ -20,6 +20,16 @@ public class FouManager extends OpaquePionManager {
             int currentColonne) {
         ArrayList<Integer[]> result = new ArrayList<Integer[]>();
         
+        int maxValue = Math.max(currentLigne, currentColonne);
+        for(int deplacement = -maxValue; deplacement < maxValue; ++deplacement) {
+            int ligne = currentLigne + deplacement;
+            int col = currentColonne + deplacement;
+            
+            // Si les lignes sont valides
+            if(ligne >= 0 && col >= 0 && ligne < _tailleEchec && col < _tailleEchec) {
+                result.add(getCoord(ligne, col));
+            }
+        }
         
         return result;
     }
@@ -27,11 +37,31 @@ public class FouManager extends OpaquePionManager {
     @Override
     protected ArrayList<Integer[]> getEmptyCase(int currentLigne, 
             int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
+        ArrayList<Integer[]> res = new ArrayList<>();
         
+        int differenceLigne = currentDecalageLigne - currentLigne;
+        int differenceCol = currentDecalageColonne - currentColonne;
         
+        int signeLigne = 1;
+        int signeCol = 1;
         
-        // TODO
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(differenceLigne < 0) {
+            signeLigne = -1;
+        }
+        
+        if(differenceCol < 0) {
+            signeCol = -1;
+        }
+        
+        int maxDiff = Math.max(Math.abs(differenceLigne), Math.abs(differenceCol));
+        
+        for(int deplacement = 0; deplacement < maxDiff; ++deplacement) {
+            int emptyLigne = currentLigne + signeLigne * deplacement;
+            int emptyCol = currentColonne + signeCol * deplacement;
+            res.add(getCoord(emptyLigne, emptyCol));
+        }
+        
+        return res;
     }
 
 }
