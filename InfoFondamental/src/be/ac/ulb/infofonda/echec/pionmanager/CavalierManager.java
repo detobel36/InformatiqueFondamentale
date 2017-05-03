@@ -6,7 +6,7 @@ import java.util.ArrayList;
  *
  * @author Rémy
  */
-public class CavalierManager extends OpaquePionManager {
+public class CavalierManager extends PionManager {
     
     private static int globalIndex = 0; // Permet d'identifier chaque cavalier de manière unique
     
@@ -18,13 +18,21 @@ public class CavalierManager extends OpaquePionManager {
 
     @Override
     public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        // TODO
-        return new ArrayList<Integer[]>();
+        ArrayList<Integer[]> result = new ArrayList<Integer[]>();
+        
+        result.add(getCoord(1, 2));
+        result.add(getCoord(2, 1));
+        
+        result.add(getCoord(-1, 2));
+        result.add(getCoord(-2, 1));
+        
+        result.add(getCoord(-1, -2));
+        result.add(getCoord(-2, -1));
+        
+        result.add(getCoord(1, -2));
+        result.add(getCoord(2, -1));
+        
+        return result;
     }
 
-    @Override
-    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

@@ -20,17 +20,6 @@ public class FouManager extends OpaquePionManager {
             int currentColonne) {
         ArrayList<Integer[]> result = new ArrayList<Integer[]>();
         
-        result.add(getCoord(1, 2));
-        result.add(getCoord(2, 1));
-        
-        result.add(getCoord(-1, 2));
-        result.add(getCoord(-2, 1));
-        
-        result.add(getCoord(-1, -2));
-        result.add(getCoord(-2, -1));
-        
-        result.add(getCoord(1, -2));
-        result.add(getCoord(2, -1));
         
         return result;
     }
@@ -38,6 +27,9 @@ public class FouManager extends OpaquePionManager {
     @Override
     protected ArrayList<Integer[]> getEmptyCase(int currentLigne, 
             int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
+        
+        
+        
         // TODO
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
