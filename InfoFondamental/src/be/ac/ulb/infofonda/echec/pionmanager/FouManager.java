@@ -19,18 +19,41 @@ public class FouManager extends OpaquePionManager {
     public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
         ArrayList<Integer[]> result = new ArrayList<Integer[]>();
         
+        // TODO vérifier que l'on ne prend pas trop de nombre et si l'on ne peut
+        // pas réduire
         int maxValue = Math.max(currentLigne, currentColonne);
-        for(int deplacement = -maxValue; deplacement < _tailleEchec-maxValue; ++deplacement) {
-            int ligne = currentLigne + deplacement;
-            int col = currentColonne + deplacement;
-            
-            // Si les lignes sont valides
-            if(ligne >= 0 && col >= 0 && ligne < _tailleEchec && col < _tailleEchec) {
-                result.add(getCoord(ligne, col));
+        for(int deplacement = -_tailleEchec; deplacement < _tailleEchec; ++deplacement) {
+            Integer[] depl = getDeplacement(currentLigne, currentColonne, true, deplacement);
+            if(depl != null) {
+                result.add(depl);
+            }
+        
+            depl = getDeplacement(currentLigne, currentColonne, false, deplacement);
+            if(depl != null) {
+                result.add(depl);
             }
         }
         
         return result;
+    }
+    
+    private Integer[] getDeplacement(int currentLigne, int currentCol, boolean inverse,
+            int deplacement) {
+        Integer[] res = null;
+        int ligne = currentLigne + deplacement;
+        int col;
+        if(inverse) {
+            col = currentCol + deplacement;
+        } else {
+            col = currentCol - deplacement;
+        }
+
+        // Si les lignes sont valides
+        if(ligne >= 0 && col >= 0 && ligne < _tailleEchec && col < _tailleEchec &&
+                (ligne != currentLigne && col != currentCol)) {
+            res = getCoord(ligne, col);
+        }
+        return res;
     }
     
     /**

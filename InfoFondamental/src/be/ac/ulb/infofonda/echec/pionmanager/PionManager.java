@@ -139,7 +139,9 @@ public abstract class PionManager {
                     if(pionContrainte != null) {
                         allContrainte.add(pionContrainte);
                     } else {
-                        System.err.println("Aucune contrainte pour le pion " + pion.getNom());
+                        System.err.println("Aucune contrainte pour le pion " + 
+                                pion.getNom() + " en coordonnée: "
+                                + "(" + ligne + ", " + col + ")");
                     }
                     
                 }

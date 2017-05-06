@@ -17,8 +17,8 @@ public class Main {
 
         // nbrFou, nbrCavalier, nbrTour
 //        new Echec(0, 0, 5, 5);
-        new Echec(8, 0, 0, 5); // aucune solution alors que possible ! :/
-//        new Echec(1, 1, 2, 3);
+//        new Echec(5, 0, 0, 5);
+        new Echec(1, 1, 2, 3);
 //        new Echec(0, 0, 2, 2);
         
 //        modelit(4);

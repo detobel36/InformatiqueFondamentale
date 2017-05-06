@@ -18,11 +18,17 @@ public class TourManager extends OpaquePionManager {
     public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
         ArrayList<Integer[]> res = new ArrayList<Integer[]>();
         for(int decalageLigne = -currentLigne; currentLigne + decalageLigne < _tailleEchec; ++decalageLigne) {
-            res.add(getCoord(currentLigne + decalageLigne, currentColonne));
+            int newLigne = currentLigne + decalageLigne;
+            if(newLigne != currentLigne) {
+                res.add(getCoord(newLigne, currentColonne));
+            }
         }
         
         for(int decalageCol = -currentColonne; currentColonne + decalageCol < _tailleEchec; ++decalageCol) {
-            res.add(getCoord(currentLigne, currentColonne + decalageCol));
+            int newCol = currentColonne + decalageCol;
+            if(newCol != currentColonne) {
+                res.add(getCoord(currentLigne, newCol));
+            }
         }
         
         return res;
