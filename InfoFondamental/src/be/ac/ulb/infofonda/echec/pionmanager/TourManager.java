@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class TourManager extends OpaquePionManager {
     
     private static final String NOM = "Tour";
+    private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public TourManager(int nbrTour, int tailleEchec) {
         super(NOM, nbrTour, tailleEchec);
@@ -30,6 +31,11 @@ public class TourManager extends OpaquePionManager {
                 res.add(getCoord(currentLigne, newCol));
             }
         }
+        
+        if(DEBUG_DEPLACEMENT) {
+            printDebugRestult(res, currentLigne, currentColonne);
+        }
+        
         
         return res;
     }

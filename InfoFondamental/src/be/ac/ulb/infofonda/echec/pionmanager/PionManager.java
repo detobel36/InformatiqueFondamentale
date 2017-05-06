@@ -103,8 +103,17 @@ public abstract class PionManager {
         }
     }
     
+    protected void printDebugRestult(ArrayList<Integer[]> result, int currentLigne, int currentColonne) {
+        System.out.println("Déplacement (" + getNom() + ") pour " + currentLigne + ", " + currentColonne);
+        String strRes = "";
+        for(Integer[] val : result) {
+            strRes += "(" + val[0] + ", " + val[1] + ") ";
+        }
+        System.out.println(strRes);
+    }
     
-    ///////////// STATIC ///////////
+    
+    ////////////////////// STATIC //////////////////////
     
     public static int getNbrPionDomaine() {
         return allPion.size();

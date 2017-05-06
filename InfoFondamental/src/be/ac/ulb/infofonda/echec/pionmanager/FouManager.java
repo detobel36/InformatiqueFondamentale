@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class FouManager extends OpaquePionManager {
 
     private static final String NOM = "Fou";
-    
+    private static final boolean DEBUG_DEPLACEMENT = false;
     
     public FouManager(int nbrFou, int tailleEchec) {
         super(NOM, nbrFou, tailleEchec);
@@ -32,6 +32,10 @@ public class FouManager extends OpaquePionManager {
             if(depl != null) {
                 result.add(depl);
             }
+        }
+        
+        if(DEBUG_DEPLACEMENT) {
+            printDebugRestult(result, currentLigne, currentColonne);
         }
         
         return result;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class CavalierManager extends PionManager {
     
     private static final String NOM = "Cavalier";
+    private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public CavalierManager(int nbrCavalier, int tailleEchec) {
         super(NOM, nbrCavalier, tailleEchec);
@@ -35,9 +36,13 @@ public class CavalierManager extends PionManager {
             int newLigne = currentLigne + coord[0];
             int newCol = currentColonne + coord[1];
             
-            if(newLigne > 0 && newCol > 0 && newLigne < _tailleEchec && newCol < _tailleEchec) {
+            if(newLigne >= 0 && newCol >= 0 && newLigne < _tailleEchec && newCol < _tailleEchec) {
                 result.add(getCoord(newLigne, newCol));
             }
+        }
+        
+        if(DEBUG_DEPLACEMENT) {
+            printDebugRestult(result, currentLigne, currentColonne);
         }
         
         return result;
