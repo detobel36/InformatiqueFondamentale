@@ -29,10 +29,15 @@ public class Echec {
     
     private void solveProblem() {
         Solver solver = _model.getSolver();
-        solver.solve();
+        int i = 0;
+        while(solver.solve()) {
+            System.out.println("Solution ! " + (++i));
+            viewResult();
+        }
+        if(i == 0) {
+            System.err.println("Aucune solution n'a été trouvée");
+        }
         
-        System.out.println("Solution: " + solver.isSatisfied());
-        viewResult();
     }
     
     private void viewResult() {

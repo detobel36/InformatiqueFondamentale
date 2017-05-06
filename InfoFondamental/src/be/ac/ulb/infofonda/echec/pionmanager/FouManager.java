@@ -16,12 +16,11 @@ public class FouManager extends OpaquePionManager {
     }
     
     @Override
-    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, 
-            int currentColonne) {
+    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
         ArrayList<Integer[]> result = new ArrayList<Integer[]>();
         
         int maxValue = Math.max(currentLigne, currentColonne);
-        for(int deplacement = -maxValue; deplacement < maxValue; ++deplacement) {
+        for(int deplacement = -maxValue; deplacement < _tailleEchec-maxValue; ++deplacement) {
             int ligne = currentLigne + deplacement;
             int col = currentColonne + deplacement;
             
@@ -33,7 +32,20 @@ public class FouManager extends OpaquePionManager {
         
         return result;
     }
-
+    
+    /**
+     * Permet de récupérer toutes les cases qui doivent être vide pour que la 
+     * case vide (currentLigne, currentColonne) est attaque par la case 
+     * (currentDecalageLigne, currentDecalageColonne)
+     * 
+     * @param currentLigne la ligne de la case que l'on observe
+     * @param currentColonne la colonne de la case que l'on observe
+     * @param currentDecalageLigne le déclage de la ligne observée 
+     *  (la où se trouve potentiellement le pion actuel)
+     * @param currentDecalageColonne le décalage de la colonne observée
+     *  (la où se trouve potentiellement le pion actuel)
+     * @return la liste des cases qui doivent être vides
+     */
     @Override
     protected ArrayList<Integer[]> getEmptyCase(int currentLigne, 
             int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {

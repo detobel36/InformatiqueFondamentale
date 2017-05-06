@@ -45,35 +45,36 @@ public abstract class PionManager {
             int currentColonne);
     
     /**
-     * Permet d'appliquer toutes les contraintes (pour que le pion actuelle
-     * tel que le pion actuelle couvre un maximum de cases)
+     * Permet de récupérer toutes les contraintes pour une case précise (en
+     * fonction de l'objet actuelle)
      * 
      * @param model le model 
      * @param variables les variables que le programme peut modifier
+     * @param ligne où se trouve la case que l'on observe
+     * @param col où se trouve la case que l'on observe
      */
-    private void applyConstraints(Model model, IntVar[][] variables) {
-        
-        for(int ligne = 0; ligne < variables.length; ++ligne) {
-            for(int col = 0; col < variables[ligne].length; ++col) {
-                
-                for(Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
-                    int ligneDep = caseAccessible[0];
-                    int colDep = caseAccessible[1];
-                    printDebug("Case accèssible: " + ligneDep + ", " + colDep + 
-                            " (case: " + getIndex() + ")");
-                    
-                    getSpecificConstraints(model, variables, ligne, col, 
-                            ligneDep, colDep).post();
-                }
-                
-            }
+    private Constraint getConstraints(Model model, IntVar[][] variables, int ligne, int col) {        
+        Constraint res = null;
+        ArrayList<Constraint> allConstraint = new ArrayList<>();
+
+        for(Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
+            int ligneDep = caseAccessible[0];
+            int colDep = caseAccessible[1];
+
+            allConstraint.add(getConstraintToAttackFrom(model, variables, ligne, col, 
+                    ligneDep, colDep));
         }
         
+        if(!allConstraint.isEmpty()) {
+            res = model.or(allConstraint.toArray(new Constraint[]{}));
+        }
+        
+        return res;
     }
     
     /**
-     * Permet de récupérer les contraintes spécifique à une case et à un 
-     * déplacement potentiel
+     * Permet de récupérer les contraintes tel que la case (ligne, col) est attaqué
+     * par la case (ligneDep, colDep)
      * 
      * @param model le modèle
      * @param variables les variables que le programme peut modifier
@@ -83,13 +84,13 @@ public abstract class PionManager {
      * @param colDep le déplacement potentiel sur la colonne
      * @return la contrainte
      */
-    protected Constraint getSpecificConstraints(Model model, IntVar[][] variables,
+    protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
             int ligne, int col, int ligneDep, int colDep) {
         return model.arithm(variables[ligneDep][colDep], "=", getIndex());
     }
     
     public void applyContraintNbrPion(Model model, IntVar[][] variables) {
-        if(_nbrPion > 0) {
+        if(_nbrPion >= 0) {
             ArrayList<IntVar> allVar = new ArrayList<IntVar>();
             for(IntVar[] ligneVar : variables) {
                 for(IntVar var : ligneVar) {
@@ -130,8 +131,23 @@ public abstract class PionManager {
     }
     
     public static void applyAllConstraints(Model model, IntVar[][] variables) {
-        for(PionManager pion : allPion) {
-            pion.applyConstraints(model, variables);
+        for(int ligne = 0; ligne < variables.length; ++ligne) {
+            for(int col = 0; col < variables[ligne].length; ++col) {
+                ArrayList<Constraint> allContrainte = new ArrayList<>();
+                for(PionManager pion : allPion) {
+                    Constraint pionContrainte = pion.getConstraints(model, variables, ligne, col);
+                    if(pionContrainte != null) {
+                        allContrainte.add(pionContrainte);
+                    } else {
+                        System.err.println("Aucune contrainte pour le pion " + pion.getNom());
+                    }
+                    
+                }
+                
+                if(!allContrainte.isEmpty()) {
+                    model.or(allContrainte.toArray(new Constraint[]{})).post();
+                }
+            }
         }
     }
     
@@ -141,8 +157,8 @@ public abstract class PionManager {
         }
     }
     
-    private void printDebug(String message) {
-        System.out.println("[DEBUG] " + message);
+    protected void printDebug(String message) {
+//        System.out.println("[DEBUG] " + message);
     }
 
     private String getSymbole() {

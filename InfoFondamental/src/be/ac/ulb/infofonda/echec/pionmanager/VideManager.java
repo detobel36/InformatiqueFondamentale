@@ -19,17 +19,18 @@ class VideManager extends PionManager {
 
     @Override
     public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        // Une case vide n'a pas de case accèssible
-        return new ArrayList<>();
+        ArrayList<Integer[]> res = new ArrayList<>();
+        res.add(getCoord(currentLigne, currentColonne));
+        return res;
     }
     
     @Override
-    protected Constraint getSpecificConstraints(Model model, IntVar[][] variables,
+    protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
             int ligne, int col, int ligneDep, int colDep) {
-        // Aucune contrainte dû au fait qu'il y ai une case vide
-        return null;
+        // la case actuelle doit être différente du vide
+        Constraint containte = model.arithm(variables[ligne][col], "!=", getIndex());
+        return containte;
     }
-    
     
     public static VideManager getInstance() {
         if(instance == null) {

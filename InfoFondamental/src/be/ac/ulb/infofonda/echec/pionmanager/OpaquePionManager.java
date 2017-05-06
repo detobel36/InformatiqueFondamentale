@@ -17,7 +17,9 @@ public abstract class OpaquePionManager extends PionManager {
     }
     
     /**
-     * Permet de récupérer toutes les cases qui doivent être vide
+     * Permet de récupérer toutes les cases qui doivent être vide pour que la 
+     * case vide (currentLigne, currentColonne) est attaque par la case 
+     * (currentDecalageLigne, currentDecalageColonne)
      * 
      * @param currentLigne la ligne de la case que l'on observe
      * @param currentColonne la colonne de la case que l'on observe
@@ -31,11 +33,24 @@ public abstract class OpaquePionManager extends PionManager {
             int currentDecalageLigne, int currentDecalageColonne);
     
     
+    /**
+     * Permet de récupérer les contraintes tel que la case (ligne, col) est attaqué
+     * par la case (ligneDep, colDep) et que les cases comprises entre ces deux point
+     * sont bien des cases vides
+     * 
+     * @param model le modèle
+     * @param variables les variables que le programme peut modifier
+     * @param ligne la ligne que l'on est entrain de regarder
+     * @param col la colonne que l'on est entraint de regarder
+     * @param ligneDep le déplacement potentiel sur la ligne 
+     * @param colDep le déplacement potentiel sur la colonne
+     * @return la contrainte
+     */
     @Override
-    protected Constraint getSpecificConstraints(Model model, IntVar[][] variables,
+    protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
             int ligne, int col, int ligneDep, int colDep) {
         // Le resCase vérifie que la case "dep" est bien celle lié au manager actuelle
-        Constraint resCase = super.getSpecificConstraints(model, variables, ligne, 
+        Constraint resCase = super.getConstraintToAttackFrom(model, variables, ligne, 
                 col, ligneDep, colDep);
         
         for(Integer[] emptyCoord : getEmptyCase(ligne, col, ligneDep, colDep)) {
