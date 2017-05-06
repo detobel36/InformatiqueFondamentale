@@ -8,9 +8,7 @@ import java.util.ArrayList;
  */
 public class CavalierManager extends PionManager {
     
-    private static int globalIndex = 0; // Permet d'identifier chaque cavalier de manière unique
-    
-    private static String NOM = "Cavalier";
+    private static final String NOM = "Cavalier";
     
     public CavalierManager(int nbrCavalier, int tailleEchec) {
         super(NOM, nbrCavalier, tailleEchec);
@@ -18,19 +16,29 @@ public class CavalierManager extends PionManager {
 
     @Override
     public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
+        ArrayList<Integer[]> allCases = new ArrayList<Integer[]>();
+        
+        allCases.add(getCoord(1, 2));
+        allCases.add(getCoord(2, 1));
+        
+        allCases.add(getCoord(-1, 2));
+        allCases.add(getCoord(-2, 1));
+        
+        allCases.add(getCoord(-1, -2));
+        allCases.add(getCoord(-2, -1));
+        
+        allCases.add(getCoord(1, -2));
+        allCases.add(getCoord(2, -1));
+        
         ArrayList<Integer[]> result = new ArrayList<Integer[]>();
-        
-        result.add(getCoord(1, 2));
-        result.add(getCoord(2, 1));
-        
-        result.add(getCoord(-1, 2));
-        result.add(getCoord(-2, 1));
-        
-        result.add(getCoord(-1, -2));
-        result.add(getCoord(-2, -1));
-        
-        result.add(getCoord(1, -2));
-        result.add(getCoord(2, -1));
+        for(Integer[] coord : allCases) {
+            int newLigne = currentLigne + coord[0];
+            int newCol = currentColonne + coord[1];
+            
+            if(newLigne > 0 && newCol > 0 && newLigne < _tailleEchec && newCol < _tailleEchec) {
+                result.add(getCoord(newLigne, newCol));
+            }
+        }
         
         return result;
     }

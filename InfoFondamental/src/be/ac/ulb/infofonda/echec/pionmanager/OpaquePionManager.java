@@ -40,7 +40,8 @@ public abstract class OpaquePionManager extends PionManager {
         
         for(Integer[] emptyCoord : getEmptyCase(ligne, col, ligneDep, colDep)) {
             Constraint newConstraint = model.arithm(
-                    variables[emptyCoord[0]][emptyCoord[1]], "=", 0); // TODO remplacer VIDE
+                    variables[emptyCoord[0]][emptyCoord[1]], "=", 
+                    VideManager.getInstance().getIndex());
             resCase = model.and(resCase, newConstraint);
         }
         

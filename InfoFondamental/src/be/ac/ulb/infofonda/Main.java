@@ -1,8 +1,10 @@
 package be.ac.ulb.infofonda;
 
+import be.ac.ulb.infofonda.echec.Echec;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.SetVar;
 
 /**
  *
@@ -12,8 +14,65 @@ public class Main {
     
     public static void main(String[] args) {
 //        example();
-        queenProblem();
+//        queenProblem();
+
+        // nbrFou, nbrCavalier, nbrTour
+        new Echec(1, 1, 2, 3);
+//        new Echec(0, 0, 2, 2);
+        
+//        modelit(4);
     }
+    
+    public static void testFixedSum() {
+		Model model = new Model();
+		SetVar setVar = model.setVar(new int[]{0,1,2,4});
+		IntVar sum = model.intVar(0, 100);
+		int[] weights = new int[]{2,2,2,3,2};
+		model.sumElements(setVar, weights, sum).post();
+        
+        Solver solver = model.getSolver();
+        solver.solve();
+        
+        int computedSum = 0;
+        for (Integer value : setVar.getValue()) {
+            computedSum += weights[value];
+        }
+        
+        System.out.println("ComputedSum: " + computedSum + " = " + sum.getValue());
+        
+//		checkSolutions(model, setVar, weights, 0, sum);
+	}
+    
+    protected static void modelit(int n) {
+        Model model = new Model();
+        IntVar[] vars = model.intVarArray("var", n, 0, n - 1, true);
+//        for (int i = 0; i < n; i++) {
+//            model.count(i, vars, vars[i]).post();
+//        }
+        IntVar intVar = model.intVar(1);
+        model.among(intVar, vars, new int[]{2}).post();
+        
+//        model.among(2, vars, 1);
+//        model.sum(vars, "=", n).post(); // cstr redundant 1
+//        int[] coeff2 = new int[n - 1];
+//        IntVar[] vs2 = new IntVar[n - 1];
+//        for (int i = 1; i < n; i++) {
+//            coeff2[i - 1] = i;
+//            vs2[i - 1] = vars[i];
+//        }
+//        model.scalar(vs2, coeff2, "=", n).post(); // cstr redundant 1
+        Solver solver = model.getSolver();
+        solver.solve();
+        
+        System.out.println("Solution: " + solver.isSatisfied());
+        
+        int i = 0;
+        for(IntVar var : vars) {
+            System.out.println("Var " + i + ": " + var.getValue());
+            ++i;
+        }
+    }
+    
     
     // model.not(model.absolute(var1, var2));
     

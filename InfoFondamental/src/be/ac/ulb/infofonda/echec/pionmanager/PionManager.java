@@ -28,6 +28,7 @@ public abstract class PionManager {
         _index = allPion.size();
         _nbrPion = nbrPion;
         _tailleEchec = tailleEchec; // Taille de l'échiquier
+        printDebug("Manager: " + _nom + " (index: " + _index + ")");
         
         allPion.add(this);
     }
@@ -58,6 +59,8 @@ public abstract class PionManager {
                 for(Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
                     int ligneDep = caseAccessible[0];
                     int colDep = caseAccessible[1];
+                    printDebug("Case accèssible: " + ligneDep + ", " + colDep + 
+                            " (case: " + getIndex() + ")");
                     
                     getSpecificConstraints(model, variables, ligne, col, 
                             ligneDep, colDep).post();
@@ -93,8 +96,9 @@ public abstract class PionManager {
                     allVar.add(var);
                 }
             }
-
-            model.sum(allVar.toArray(new IntVar[]{}), "=", _nbrPion);
+            
+            IntVar intVar = model.intVar(_nbrPion);
+            model.among(intVar, allVar.toArray(new IntVar[]{}), new int[]{getIndex()}).post();
         }
     }
     
@@ -107,7 +111,7 @@ public abstract class PionManager {
     
     public static String pionIndex2String(int index) {
         PionManager pion = allPion.get(index);
-        return (pion != null) ? pion.getNom() : "";
+        return (pion != null) ? pion.getSymbole() : "";
     }
     
     protected static Integer[] getCoord(int ligne, int col) {
@@ -119,10 +123,10 @@ public abstract class PionManager {
     
     public static void initAllManager(int nbrFou, int nbrCavalier, int nbrTour, 
             int tailleEchec) {
-        new VideManager(tailleEchec);
-        new FouManager(tailleEchec, nbrFou);
-        new CavalierManager(tailleEchec, nbrCavalier);
-        new TourManager(tailleEchec, nbrTour);
+        VideManager.getInstance();
+        new FouManager(nbrFou, tailleEchec);
+        new CavalierManager(nbrCavalier, tailleEchec);
+        new TourManager(nbrTour, tailleEchec);
     }
     
     public static void applyAllConstraints(Model model, IntVar[][] variables) {
@@ -136,5 +140,14 @@ public abstract class PionManager {
             pion.applyContraintNbrPion(model, variables);
         }
     }
+    
+    private void printDebug(String message) {
+        System.out.println("[DEBUG] " + message);
+    }
+
+    private String getSymbole() {
+        return getNom().substring(0, 1);
+    }
+    
     
 }
