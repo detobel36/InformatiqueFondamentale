@@ -66,26 +66,6 @@ public class Echec {
     private void initConstraintsDomination() {
         PionManager.applyAllConstraints(_model, _variables); // TODO TEST
         PionManager.applyAllContraintNbrPion(_model, _variables);
-        
-        
-        // Pas utilisé... Uniquement pour backup :P
-//                IntVar current = _variables[ligne][col];
-//                _model.arithm(current, "=", videManager.getIndex()).post();
-//                
-//                for(Integer[] deplacement : fouManager.getAccessibleCase(ligne, col)) {
-//                    int ligneDep = deplacement[0];
-//                    int colDep = deplacement[1];
-//                    if(ligneDep < _tailleEchec && colDep < _tailleEchec) { // TODO vérifier '<' ou '<='
-//                        _model.or(_model.arithm(_variables[ligneDep][colDep], "=", fouManager.getIndex()));
-//                    }
-//                    
-////                    BoolVar var = _model.arithm(_variables[0], "=", _variables[0]).reify();
-////                    _model.arithm(var1, "=", var2);
-//                }
-//                
-//            }
-//        }
-        
     }
     
     
