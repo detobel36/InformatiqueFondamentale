@@ -53,12 +53,15 @@ public abstract class OpaquePionManager extends PionManager {
         Constraint resCase = super.getConstraintToAttackFrom(model, variables, ligne, 
                 col, ligneDep, colDep);
         
+        String strDebug = " AND ";
         for(Integer[] emptyCoord : getEmptyCase(ligne, col, ligneDep, colDep)) {
             Constraint newConstraint = model.arithm(
                     variables[emptyCoord[0]][emptyCoord[1]], "=", 
                     VideManager.getInstance().getIndex());
+            strDebug += "(" + emptyCoord[0] + ", " + emptyCoord[1] + ") = " + VideManager.getInstance().getIndex() + " AND ";
             resCase = model.and(resCase, newConstraint);
         }
+        printDebug("\t" + strDebug);
         
         return resCase;
     }

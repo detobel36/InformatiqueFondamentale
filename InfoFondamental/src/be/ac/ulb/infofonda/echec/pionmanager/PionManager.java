@@ -13,6 +13,7 @@ import org.chocosolver.solver.variables.IntVar;
 public abstract class PionManager {
     
     private static final ArrayList<PionManager> allPion = new ArrayList<PionManager>();
+    private static boolean DEBUG = false;
     
     private String _nom;
     protected int _index;
@@ -56,7 +57,7 @@ public abstract class PionManager {
     private Constraint getConstraints(Model model, IntVar[][] variables, int ligne, int col) {        
         Constraint res = null;
         ArrayList<Constraint> allConstraint = new ArrayList<>();
-
+        
         for(Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
             int ligneDep = caseAccessible[0];
             int colDep = caseAccessible[1];
@@ -86,12 +87,13 @@ public abstract class PionManager {
      */
     protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
             int ligne, int col, int ligneDep, int colDep) {
+        printDebug("[super] (" + ligneDep + ", " + colDep + ") = " + getIndex());
         return model.arithm(variables[ligneDep][colDep], "=", getIndex());
     }
     
     public void applyContraintNbrPion(Model model, IntVar[][] variables) {
         if(_nbrPion >= 0) {
-            ArrayList<IntVar> allVar = new ArrayList<IntVar>();
+            ArrayList<IntVar> allVar = new ArrayList<>();
             for(IntVar[] ligneVar : variables) {
                 for(IntVar var : ligneVar) {
                     allVar.add(var);
@@ -112,6 +114,9 @@ public abstract class PionManager {
         System.out.println(strRes);
     }
     
+    private String getSymbole() {
+        return getNom().substring(0, 1);
+    }
     
     ////////////////////// STATIC //////////////////////
     
@@ -142,6 +147,8 @@ public abstract class PionManager {
     public static void applyAllConstraints(Model model, IntVar[][] variables) {
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
+                printDebug("Contrainte pour (" + ligne + ", " + col + ")");
+                
                 ArrayList<Constraint> allContrainte = new ArrayList<>();
                 for(PionManager pion : allPion) {
                     Constraint pionContrainte = pion.getConstraints(model, variables, ligne, col);
@@ -168,13 +175,10 @@ public abstract class PionManager {
         }
     }
     
-    protected void printDebug(String message) {
-//        System.out.println("[DEBUG] " + message);
+    protected static void printDebug(String message) {
+        if(DEBUG) {
+            System.out.println("[DEBUG] " + message);
+        }
     }
-
-    private String getSymbole() {
-        return getNom().substring(0, 1);
-    }
-    
     
 }

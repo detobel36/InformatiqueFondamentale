@@ -51,14 +51,19 @@ public class TourManager extends OpaquePionManager {
             int maxCol = Math.max(currentColonne, currentDecalageColonne);
             
             for(int col = minCol; col < maxCol; ++col) {
-                result.add(getCoord(currentLigne, col));
+                if(col != currentDecalageColonne) {
+                    result.add(getCoord(currentLigne, col));
+                }
             }
             
         } else if(currentColonne == currentDecalageColonne) {
             int minLigne = Math.min(currentLigne, currentDecalageLigne);
             int maxLigne = Math.max(currentLigne, currentDecalageLigne);
+            
             for(int ligne = minLigne; ligne < maxLigne; ++ligne) {
-                result.add(getCoord(ligne, currentColonne));
+                if(ligne != currentDecalageLigne) {
+                    result.add(getCoord(ligne, currentColonne));
+                }
             }
             
         } else {
@@ -66,7 +71,6 @@ public class TourManager extends OpaquePionManager {
                     currentLigne + ", " + currentColonne + " à " + 
                     currentDecalageLigne + ", " + currentDecalageColonne + ")");
         }
-        
         
         return result;
     }

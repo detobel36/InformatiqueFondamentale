@@ -99,6 +99,16 @@ public class FouManager extends OpaquePionManager {
             int emptyCol = currentColonne + signeCol * deplacement;
             res.add(getCoord(emptyLigne, emptyCol));
         }
+//        
+//        System.out.println("Cases vide pour le déplacement de (" + currentLigne + 
+//                ", " + currentColonne + ") et (" + currentDecalageLigne + ", " + 
+//                currentDecalageColonne + ") ");
+//        String strRes = "";
+//        for(Integer[] dep : res) {
+//            strRes += "(" + dep[0] + ", " + dep[1] + ") ";
+//        }
+//        System.out.println(strRes);
+//        
         
         return res;
     }
