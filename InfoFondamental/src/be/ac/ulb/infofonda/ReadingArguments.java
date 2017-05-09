@@ -130,6 +130,12 @@ public class ReadingArguments {
     private void printHelp() {
         System.out.println("------------ INFO-F-302 ------------");
         System.out.println("\t-h, -help\tPour afficher ce texte");
+        System.out.println("\t-d/-i\tChoix entre le problème de domination (-d) ou d'indépendance (-i)");
+        System.out.println("\t-n\tTaille de l'échiquier");
+        System.out.println("\t-t, -tour\tNombre de tour");
+        System.out.println("\t-f, -fou\tNombre de fou");
+        System.out.println("\t-c, -cavalier\tNombre de cavalier");
+        System.out.println("");
     }
 
     /**
