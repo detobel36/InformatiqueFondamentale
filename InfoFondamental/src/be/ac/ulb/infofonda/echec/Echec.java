@@ -15,11 +15,18 @@ public class Echec {
     
     private final int _tailleEchec;
     private IntVar[][] _variables;
+    private boolean _utf8;
     
     public Echec(int nbrFou, int nbrCavalier, int nbrTour, int tailleEchec) {
+        this(nbrFou, nbrCavalier, nbrTour, tailleEchec, false);
+    }
+        
+    public Echec(int nbrFou, int nbrCavalier, int nbrTour, int tailleEchec, boolean
+            utf8) {
         _model = new Model("Echec");
         
         _tailleEchec = tailleEchec;
+        _utf8 = utf8;
         
         PionManager.initAllManager(nbrFou, nbrCavalier, nbrTour, _tailleEchec);
         createVariables();
@@ -43,15 +50,66 @@ public class Echec {
     private void viewResult() {
         System.out.println("-----------------------");
         for(int ligne = 0; ligne < _tailleEchec; ++ligne) {
-            String strLigne = "";
+            String strLigne = addBordureBegin(ligne);
+            
             for(int col = 0; col < _tailleEchec; ++col) {
                 int value = _variables[ligne][col].getValue();
-                strLigne += PionManager.pionIndex2String(value);
+                strLigne += PionManager.pionIndex2String(value, _utf8);
+                strLigne += addBordureCentral(col);
             }
+            strLigne += addBordureEnd(ligne);
+            
             System.out.println(strLigne);
         }
         System.out.println("-----------------------");
+    }
+    
+    private String addBordureBegin(int currentLigne) {
+        String result = "";
+        if(_utf8) {
+            if(currentLigne == 0) {
+                result = "┌─";
+                for(int col = 0; col < _tailleEchec-1; ++col) {
+                    result += "──┬─";
+                }
+                result += "──┐\n│ ";
+                
+            } else {
+                result = "│ ";
+            }
+        }
+        return result;
+    }
+    
+    private String addBordureEnd(int currentLigne) {
+        String result = "";
+        if(_utf8) {
+            int tailleMaximum = _tailleEchec-1;
+            if(currentLigne == tailleMaximum) {
+                result = " │\n└─";
+                for(int col = 0; col < _tailleEchec-1; ++col) {
+                    result += "──┴─";
+                }
+                result += "──┘";
+                
+            } else {
+                result = " │\n├─";
+                for(int col = 0; col < _tailleEchec-1; ++col) {
+                    result += "──┼─";
+                }
+                result += "──┤";
+            }
+        }
         
+        return result;
+    }
+    
+    private String addBordureCentral(int currentCol) {
+        String result = "";
+        if(_utf8 && currentCol < _tailleEchec-1) {
+            result = " │ ";
+        }
+        return result;
     }
     
     

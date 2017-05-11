@@ -12,7 +12,7 @@ public class TourManager extends OpaquePionManager {
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public TourManager(int nbrTour, int tailleEchec) {
-        super(NOM, nbrTour, tailleEchec);
+        super(NOM, nbrTour, tailleEchec, 'T', '♜');
     }
 
     @Override

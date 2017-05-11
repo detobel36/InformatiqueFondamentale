@@ -12,7 +12,7 @@ public class CavalierManager extends PionManager {
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public CavalierManager(int nbrCavalier, int tailleEchec) {
-        super(NOM, nbrCavalier, tailleEchec);
+        super(NOM, nbrCavalier, tailleEchec, 'C', '♞');
     }
 
     @Override

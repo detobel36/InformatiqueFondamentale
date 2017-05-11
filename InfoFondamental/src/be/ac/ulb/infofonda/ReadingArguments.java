@@ -6,20 +6,25 @@ package be.ac.ulb.infofonda;
  */
 public class ReadingArguments {
     
-    private int index;
+    private int _index;
     
-    private boolean probDomination = false;
-    private int tailleEchec = 1;
-    private int nbrTour = 0;
-    private int nbrCavalier = 0;
-    private int nbrFou = 0;
+    private boolean _probDomination = false;
+    private int _tailleEchec = 1;
+    private int _nbrTour = 0;
+    private int _nbrCavalier = 0;
+    private int _nbrFou = 0;
+    private boolean _utf8 = false;
     
     
     public ReadingArguments(String[] args) throws IllegalArgumentException {
+        if(args.length == 0) {
+            printHelp();
+            return;
+        }
         
-        for(index = 0; index < args.length; ++index) {
+        for(_index = 0; _index < args.length; ++_index) {
             
-            switch(args[index]) {
+            switch(args[_index]) {
                 
                 case "-h":
                 case "-help":
@@ -28,11 +33,11 @@ public class ReadingArguments {
                     
                 /////// TYPE DE PROBLEME ///////
                 case "-d":
-                    probDomination = true;
+                    _probDomination = true;
                     break;
                     
                 case "-i":
-                    probDomination = false;
+                    _probDomination = false;
                     throw new IllegalArgumentException("Pas encore implémenté"); // TODO
                     
                 /////// TAILLE ECHIQUIER ///////
@@ -42,7 +47,7 @@ public class ReadingArguments {
                     int newTailleEchec = Integer.parseInt(strDimension);
                     
                     if(newTailleEchec > 0) {
-                        tailleEchec = newTailleEchec;
+                        _tailleEchec = newTailleEchec;
                     } else {
                         throw new IllegalArgumentException("La taille de "
                                 + "l'échiquier doit être suppérieur à zéro");
@@ -57,7 +62,7 @@ public class ReadingArguments {
                 case "-tour":
                     int newNbrTour = getIntNextArgs(args);
                     if(newNbrTour >= 0) {
-                        nbrTour = newNbrTour;
+                        _nbrTour = newNbrTour;
                     } else {
                         throw new IllegalArgumentException("Le nombre de tour doit"
                                 + "être suppérieur ou égal à zéro");
@@ -71,7 +76,7 @@ public class ReadingArguments {
                 case "-cavalier":
                     int newNbrCavalier = getIntNextArgs(args);
                     if(newNbrCavalier >= 0) {
-                        nbrCavalier = newNbrCavalier;
+                        _nbrCavalier = newNbrCavalier;
                     } else {
                         throw new IllegalArgumentException("Le nombre de cavalier doit"
                                 + "être suppérieur ou égal à zéro");
@@ -85,7 +90,7 @@ public class ReadingArguments {
                 case "-fou":
                     int newNbrFou = getIntNextArgs(args);
                     if(newNbrFou >= 0) {
-                        nbrFou = newNbrFou;
+                        _nbrFou = newNbrFou;
                     } else {
                         throw new IllegalArgumentException("Le nombre de fou doit"
                                 + "être suppérieur ou égal à zéro");
@@ -93,9 +98,15 @@ public class ReadingArguments {
                     break;
                     
                     
+                /////// UTF8 ///////
+                    
+                case "-utf8":
+                    _utf8 = true;
+                    break;
+                    
                 default:
                     throw new IllegalArgumentException("Cet argument est inconnu "
-                            + "(" + args[index] + "). "
+                            + "(" + args[_index] + "). "
                             + "Tappez '-h' pour plus d'informations.");
                     
                     
@@ -118,61 +129,67 @@ public class ReadingArguments {
     }
     
     private String getNextArgs(String args[]) throws IllegalArgumentException {
-        if(index >= args.length) {
+        if(_index >= args.length) {
             throw new IllegalArgumentException("Le nombre d'arguments semble "
                     + "incorrecte (n'avez vous rien oublié après: " 
-                    + args[index] + ")");
+                    + args[_index] + ")");
         }
-        return args[++index];
+        return args[++_index];
     }
     
     
     private void printHelp() {
         System.out.println("------------ INFO-F-302 ------------");
         System.out.println("\t-h, -help\tPour afficher ce texte");
-        System.out.println("\t-d/-i\tChoix entre le problème de domination (-d) ou d'indépendance (-i)");
-        System.out.println("\t-n\tTaille de l'échiquier");
+        System.out.println("\t-d/-i\t\tChoix entre le problème de domination (-d) ou d'indépendance (-i)");
+        System.out.println("\t-n\t\tTaille de l'échiquier");
         System.out.println("\t-t, -tour\tNombre de tour");
         System.out.println("\t-f, -fou\tNombre de fou");
         System.out.println("\t-c, -cavalier\tNombre de cavalier");
+        System.out.println("\t-utf8\t\tAffiche les pions via des caractères UTF-8");
         System.out.println("");
     }
 
     /**
-     * @return the probDomination
+     * @return the _probDomination
      */
     public boolean isProbDomination() {
-        return probDomination;
+        return _probDomination;
     }
 
     /**
-     * @return the tailleEchec
+     * @return the _tailleEchec
      */
     public int getTailleEchec() {
-        return tailleEchec;
+        return _tailleEchec;
     }
 
     /**
-     * @return the nbrTour
+     * @return the _nbrTour
      */
     public int getNbrTour() {
-        return nbrTour;
+        return _nbrTour;
     }
 
     /**
-     * @return the nbrCavalier
+     * @return the _nbrCavalier
      */
     public int getNbrCavalier() {
-        return nbrCavalier;
+        return _nbrCavalier;
     }
 
     /**
-     * @return the nbrFou
+     * @return the _nbrFou
      */
     public int getNbrFou() {
-        return nbrFou;
+        return _nbrFou;
     }
-    
-    
+
+    /**
+     * @return the _utf8
+     */
+    public boolean isUtf8() {
+        return _utf8;
+    }
     
 }

@@ -12,7 +12,7 @@ public class FouManager extends OpaquePionManager {
     private static final boolean DEBUG_DEPLACEMENT = false;
     
     public FouManager(int nbrFou, int tailleEchec) {
-        super(NOM, nbrFou, tailleEchec);
+        super(NOM, nbrFou, tailleEchec, 'F', '♝');
     }
     
     @Override

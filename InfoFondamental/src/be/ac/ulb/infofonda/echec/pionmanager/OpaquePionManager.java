@@ -12,8 +12,9 @@ import org.chocosolver.solver.variables.IntVar;
  */
 public abstract class OpaquePionManager extends PionManager {
     
-    protected OpaquePionManager(String nomPion, int nbrPion, int tailleEchec) {
-        super(nomPion, nbrPion, tailleEchec);
+    protected OpaquePionManager(String nomPion, int nbrPion, int tailleEchec, 
+            char symbole, char utf8Symbole) {
+        super(nomPion, nbrPion, tailleEchec, symbole, utf8Symbole);
     }
     
     /**

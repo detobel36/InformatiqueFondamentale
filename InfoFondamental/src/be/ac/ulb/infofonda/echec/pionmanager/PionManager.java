@@ -19,16 +19,23 @@ public abstract class PionManager {
     protected int _index;
     protected final int _nbrPion;
     protected final int _tailleEchec;
+    protected final char _symbole;
+    protected final char _utf8Symbole;
     
     protected PionManager(String nomPion, int tailleEchec) {
-        this(nomPion, -1, tailleEchec);
+        this(nomPion, -1, tailleEchec, '*', ' ');
     }
     
-    protected PionManager(String nomPion, int nbrPion, int tailleEchec) {
+    protected PionManager(String nomPion, int nbrPion, int tailleEchec, char symbole,
+            char utf8Symbole) {
         _nom = nomPion;
         _index = allPion.size();
         _nbrPion = nbrPion;
         _tailleEchec = tailleEchec; // Taille de l'échiquier
+        
+        _symbole = symbole;
+        _utf8Symbole = utf8Symbole;
+        
         printDebug("Manager: " + _nom + " (index: " + _index + ")");
         
         allPion.add(this);
@@ -114,8 +121,8 @@ public abstract class PionManager {
         System.out.println(strRes);
     }
     
-    private String getSymbole() {
-        return getNom().substring(0, 1);
+    private String getSymbole(boolean utf8) {
+        return "" + (utf8 ? _utf8Symbole : _symbole);
     }
     
     ////////////////////// STATIC //////////////////////
@@ -124,9 +131,9 @@ public abstract class PionManager {
         return allPion.size();
     }
     
-    public static String pionIndex2String(int index) {
+    public static String pionIndex2String(int index, boolean utf8) {
         PionManager pion = allPion.get(index);
-        return (pion != null) ? pion.getSymbole() : "";
+        return (pion != null) ? pion.getSymbole(utf8) : " ";
     }
     
     protected static Integer[] getCoord(int ligne, int col) {
