@@ -11,13 +11,14 @@ public class CavalierManager extends PionManager {
     private static final String NOM = "Cavalier";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
-    public CavalierManager(int nbrCavalier, int tailleEchec) {
+    public CavalierManager(final int nbrCavalier, final int tailleEchec) {
         super(NOM, nbrCavalier, tailleEchec, 'C', '♞');
     }
 
     @Override
-    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        ArrayList<Integer[]> allCases = new ArrayList<Integer[]>();
+    public ArrayList<Integer[]> getAccessibleCase(final int currentLigne, 
+            final int currentColonne) {
+        final ArrayList<Integer[]> allCases = new ArrayList<>();
         
         allCases.add(getCoord(1, 2));
         allCases.add(getCoord(2, 1));
@@ -31,10 +32,10 @@ public class CavalierManager extends PionManager {
         allCases.add(getCoord(1, -2));
         allCases.add(getCoord(2, -1));
         
-        ArrayList<Integer[]> result = new ArrayList<Integer[]>();
-        for(Integer[] coord : allCases) {
-            int newLigne = currentLigne + coord[0];
-            int newCol = currentColonne + coord[1];
+        final ArrayList<Integer[]> result = new ArrayList<>();
+        for(final Integer[] coord : allCases) {
+            final int newLigne = currentLigne + coord[0];
+            final int newCol = currentColonne + coord[1];
             
             if(newLigne >= 0 && newCol >= 0 && newLigne < _tailleEchec && newCol < _tailleEchec) {
                 result.add(getCoord(newLigne, newCol));

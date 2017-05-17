@@ -11,13 +11,14 @@ public class FouManager extends OpaquePionManager {
     private static final String NOM = "Fou";
     private static final boolean DEBUG_DEPLACEMENT = false;
     
-    public FouManager(int nbrFou, int tailleEchec) {
+    public FouManager(final int nbrFou, final int tailleEchec) {
         super(NOM, nbrFou, tailleEchec, 'F', '♝');
     }
     
     @Override
-    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        ArrayList<Integer[]> result = new ArrayList<Integer[]>();
+    public ArrayList<Integer[]> getAccessibleCase(final int currentLigne, 
+            final int currentColonne) {
+        final ArrayList<Integer[]> result = new ArrayList<>();
         
         // TODO vérifier que l'on ne prend pas trop de nombre et si l'on ne peut
         // pas réduire
@@ -41,10 +42,11 @@ public class FouManager extends OpaquePionManager {
         return result;
     }
     
-    private Integer[] getDeplacement(int currentLigne, int currentCol, boolean inverse,
-            int deplacement) {
+    private Integer[] getDeplacement(final int currentLigne, final int currentCol, 
+            final boolean inverse, final int deplacement) {
+        
         Integer[] res = null;
-        int ligne = currentLigne + deplacement;
+        final int ligne = currentLigne + deplacement;
         int col;
         if(inverse) {
             col = currentCol + deplacement;
@@ -74,12 +76,13 @@ public class FouManager extends OpaquePionManager {
      * @return la liste des cases qui doivent être vides
      */
     @Override
-    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, 
-            int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
-        ArrayList<Integer[]> res = new ArrayList<>();
+    protected ArrayList<Integer[]> getEmptyCase(final int currentLigne, 
+            final int currentColonne, final int currentDecalageLigne, 
+            final int currentDecalageColonne) {
+        final ArrayList<Integer[]> res = new ArrayList<>();
         
-        int differenceLigne = currentDecalageLigne - currentLigne;
-        int differenceCol = currentDecalageColonne - currentColonne;
+        final int differenceLigne = currentDecalageLigne - currentLigne;
+        final int differenceCol = currentDecalageColonne - currentColonne;
         
         int signeLigne = 1;
         int signeCol = 1;
@@ -92,11 +95,11 @@ public class FouManager extends OpaquePionManager {
             signeCol = -1;
         }
         
-        int maxDiff = Math.max(Math.abs(differenceLigne), Math.abs(differenceCol));
+        final int maxDiff = Math.max(Math.abs(differenceLigne), Math.abs(differenceCol));
         
         for(int deplacement = 0; deplacement < maxDiff; ++deplacement) {
-            int emptyLigne = currentLigne + signeLigne * deplacement;
-            int emptyCol = currentColonne + signeCol * deplacement;
+            final int emptyLigne = currentLigne + signeLigne * deplacement;
+            final int emptyCol = currentColonne + signeCol * deplacement;
             res.add(getCoord(emptyLigne, emptyCol));
         }
 //        

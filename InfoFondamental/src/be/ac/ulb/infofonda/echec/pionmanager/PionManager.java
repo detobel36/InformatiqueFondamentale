@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.TypeProbleme;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
@@ -12,7 +13,7 @@ import org.chocosolver.solver.variables.IntVar;
  */
 public abstract class PionManager {
     
-    private static final ArrayList<PionManager> allPion = new ArrayList<PionManager>();
+    private static final ArrayList<PionManager> allPion = new ArrayList<>();
     private static boolean DEBUG = false;
     
     private String _nom;
@@ -22,12 +23,12 @@ public abstract class PionManager {
     protected final char _symbole;
     protected final char _utf8Symbole;
     
-    protected PionManager(String nomPion, int tailleEchec) {
+    protected PionManager(final String nomPion, final int tailleEchec) {
         this(nomPion, -1, tailleEchec, '*', ' ');
     }
     
-    protected PionManager(String nomPion, int nbrPion, int tailleEchec, char symbole,
-            char utf8Symbole) {
+    protected PionManager(final String nomPion, final int nbrPion, 
+            final int tailleEchec, final char symbole, final char utf8Symbole) {
         _nom = nomPion;
         _index = allPion.size();
         _nbrPion = nbrPion;
@@ -41,16 +42,29 @@ public abstract class PionManager {
         allPion.add(this);
     }
     
-    protected String getNom() {
-        return _nom + "-" + _index;
-    }
+    /**
+     * Permet de récupérer les cases accèssibles si un pion du type actuelle est
+     * placé sur les positions passée en paramètres
+     * 
+     * @param currentLigne la ligne actuelle
+     * @param currentColonne la colonne actuelle
+     * @return un array d'Integer qui représente les coordonnées sur l'échiquier
+     */
+    public abstract ArrayList<Integer[]> getAccessibleCase(int currentLigne, 
+            int currentColonne);
     
     public int getIndex() {
         return _index;
     }
     
-    public abstract ArrayList<Integer[]> getAccessibleCase(int currentLigne, 
-            int currentColonne);
+    protected String getNom() {
+        return _nom + "-" + _index;
+    }
+    
+    protected String getSymbole(final boolean utf8) {
+        return "" + (utf8 ? _utf8Symbole : _symbole);
+    }
+    
     
     /**
      * Permet de récupérer toutes les contraintes pour une case précise (en
@@ -60,21 +74,29 @@ public abstract class PionManager {
      * @param variables les variables que le programme peut modifier
      * @param ligne où se trouve la case que l'on observe
      * @param col où se trouve la case que l'on observe
+     * @param domination True si c'est un problème de domination, False si 
+     * c'est un problème d'indépendance
      */
-    private Constraint getConstraints(Model model, IntVar[][] variables, int ligne, int col) {        
+    private Constraint getConstraints(final Model model, final IntVar[][] variables, 
+            final int ligne, final int col, final TypeProbleme typeProbleme) {        
         Constraint res = null;
-        ArrayList<Constraint> allConstraint = new ArrayList<>();
+        final ArrayList<Constraint> allConstraint = new ArrayList<>();
         
-        for(Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
-            int ligneDep = caseAccessible[0];
-            int colDep = caseAccessible[1];
-
-            allConstraint.add(getConstraintToAttackFrom(model, variables, ligne, col, 
-                    ligneDep, colDep));
+        for(final Integer[] caseAccessible : getAccessibleCase(ligne, col)) {
+            final int ligneDep = caseAccessible[0];
+            final int colDep = caseAccessible[1];
+            
+            allConstraint.add(getConstraintCaseAttackToAnother(model, variables, ligne, 
+                    col, ligneDep, colDep, typeProbleme));
         }
         
         if(!allConstraint.isEmpty()) {
-            res = model.or(allConstraint.toArray(new Constraint[]{}));
+            final Constraint[] arrayAllConstraint = allConstraint.toArray(new Constraint[]{});
+            if(typeProbleme.isOrOperation()) {
+                res = model.or(arrayAllConstraint);
+            } else {
+                res = model.and(arrayAllConstraint);
+            }
         }
         
         return res;
@@ -90,75 +112,105 @@ public abstract class PionManager {
      * @param col la colonne que l'on est entraint de regarder
      * @param ligneDep le déplacement potentiel sur la ligne 
      * @param colDep le déplacement potentiel sur la colonne
+     * @param typeProbleme permet de savoir le problème que l'on veut modéliser
      * @return la contrainte
      */
-    protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
-            int ligne, int col, int ligneDep, int colDep) {
-        printDebug("[super] (" + ligneDep + ", " + colDep + ") = " + getIndex());
-        return model.arithm(variables[ligneDep][colDep], "=", getIndex());
+    protected Constraint getConstraintCaseAttackToAnother(final Model model, 
+            final IntVar[][] variables, final int ligne, final int col, 
+            final int ligneDep, final int colDep, final TypeProbleme typeProbleme) {
+        
+        final int pieceIndex = getIndex();
+        
+        Constraint contrainte = null;
+        if(typeProbleme.equals(TypeProbleme.DOMINATION)) {
+            printDebug("[super] (" + ligneDep + ", " + colDep + ") = " + pieceIndex);
+            contrainte = model.arithm(variables[ligneDep][colDep], "=", pieceIndex);
+            
+        } else if(typeProbleme.equals(TypeProbleme.INDEPENDANCE)) {
+            final int pieceVide = VideManager.getInstance().getIndex();
+            
+            printDebug("[super] (" + ligneDep + ", " + colDep + ") = " + pieceVide);
+            contrainte = model.arithm(variables[ligneDep][colDep], "=", pieceVide);
+            
+            printDebug("[super] (" + ligne + ", " + col + ") = " + pieceIndex);
+            contrainte = model.and(contrainte, model.arithm(variables[ligne][col], "=", pieceIndex));
+        }
+        
+        return contrainte;
     }
     
-    public void applyContraintNbrPion(Model model, IntVar[][] variables) {
+    public void applyContraintNbrPion(final Model model, final IntVar[][] variables) {
         if(_nbrPion >= 0) {
-            ArrayList<IntVar> allVar = new ArrayList<>();
-            for(IntVar[] ligneVar : variables) {
-                for(IntVar var : ligneVar) {
+            final ArrayList<IntVar> allVar = new ArrayList<>();
+            for(final IntVar[] ligneVar : variables) {
+                for(final IntVar var : ligneVar) {
                     allVar.add(var);
                 }
             }
             
-            IntVar intVar = model.intVar(_nbrPion);
+            final IntVar intVar = model.intVar(_nbrPion);
             model.among(intVar, allVar.toArray(new IntVar[]{}), new int[]{getIndex()}).post();
         }
     }
     
-    protected void printDebugRestult(ArrayList<Integer[]> result, int currentLigne, int currentColonne) {
-        System.out.println("Déplacement (" + getNom() + ") pour " + currentLigne + ", " + currentColonne);
+    protected void printDebugRestult(final ArrayList<Integer[]> result, 
+            final int currentLigne, final int currentColonne) {
+        System.out.println("Déplacement (" + getNom() + ") pour " + currentLigne + 
+                ", " + currentColonne);
+        
         String strRes = "";
-        for(Integer[] val : result) {
+        for(final Integer[] val : result) {
             strRes += "(" + val[0] + ", " + val[1] + ") ";
         }
         System.out.println(strRes);
     }
     
-    private String getSymbole(boolean utf8) {
-        return "" + (utf8 ? _utf8Symbole : _symbole);
-    }
     
     ////////////////////// STATIC //////////////////////
     
-    public static int getNbrPionDomaine() {
-        return allPion.size();
-    }
-    
-    public static String pionIndex2String(int index, boolean utf8) {
-        PionManager pion = allPion.get(index);
-        return (pion != null) ? pion.getSymbole(utf8) : " ";
-    }
-    
-    protected static Integer[] getCoord(int ligne, int col) {
-        Integer[] tempRes = new Integer[2];
+    protected static Integer[] getCoord(final int ligne, final int col) {
+        final Integer[] tempRes = new Integer[2];
         tempRes[0] = ligne;
         tempRes[1] = col;
         return tempRes;
     }
     
-    public static void initAllManager(int nbrFou, int nbrCavalier, int nbrTour, 
-            int tailleEchec) {
+    protected static void printDebug(final String message) {
+        if(DEBUG) {
+            System.out.println("[DEBUG] " + message);
+        }
+    }
+    
+    public static int getNbrPionDomaine() {
+        return allPion.size();
+    }
+    
+    public static String pionIndex2String(final int index, final boolean utf8) {
+        final PionManager pion = allPion.get(index);
+        return (pion != null) ? pion.getSymbole(utf8) : " ";
+    }
+    
+    public static void initAllManager(final int nbrFou, final int nbrCavalier, 
+            final int nbrTour, final int tailleEchec) {
         VideManager.getInstance();
         new FouManager(nbrFou, tailleEchec);
         new CavalierManager(nbrCavalier, tailleEchec);
         new TourManager(nbrTour, tailleEchec);
     }
     
-    public static void applyAllConstraints(Model model, IntVar[][] variables) {
+    public static void applyAllConstraints(final Model model, final IntVar[][] variables,
+            final TypeProbleme typeProbleme) {
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
                 printDebug("Contrainte pour (" + ligne + ", " + col + ")");
                 
-                ArrayList<Constraint> allContrainte = new ArrayList<>();
-                for(PionManager pion : allPion) {
-                    Constraint pionContrainte = pion.getConstraints(model, variables, ligne, col);
+                final ArrayList<Constraint> allContrainte = new ArrayList<>();
+                for(final PionManager pion : allPion) {
+                    // Get all constraintes for a specific position to a specific
+                    // move.
+                    final Constraint pionContrainte = pion.getConstraints(model, 
+                            variables, ligne, col, typeProbleme);
+                    
                     if(pionContrainte != null) {
                         allContrainte.add(pionContrainte);
                     } else {
@@ -176,15 +228,9 @@ public abstract class PionManager {
         }
     }
     
-    public static void applyAllContraintNbrPion(Model model, IntVar[][] variables) {
-        for(PionManager pion : allPion) {
+    public static void applyAllContraintNbrPion(final Model model, final IntVar[][] variables) {
+        for(final PionManager pion : allPion) {
             pion.applyContraintNbrPion(model, variables);
-        }
-    }
-    
-    protected static void printDebug(String message) {
-        if(DEBUG) {
-            System.out.println("[DEBUG] " + message);
         }
     }
     

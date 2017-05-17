@@ -9,6 +9,7 @@ public class ReadingArguments {
     private int _index;
     
     private boolean _probDomination = false;
+    private boolean _probIndependance = false;
     private int _tailleEchec = 1;
     private int _nbrTour = 0;
     private int _nbrCavalier = 0;
@@ -16,7 +17,7 @@ public class ReadingArguments {
     private boolean _utf8 = false;
     
     
-    public ReadingArguments(String[] args) throws IllegalArgumentException {
+    public ReadingArguments(final String[] args) throws IllegalArgumentException {
         if(args.length == 0) {
             printHelp();
             return;
@@ -37,14 +38,14 @@ public class ReadingArguments {
                     break;
                     
                 case "-i":
-                    _probDomination = false;
-                    throw new IllegalArgumentException("Pas encore implémenté"); // TODO
+                    _probIndependance = true;
+                    break;
                     
                 /////// TAILLE ECHIQUIER ///////
                     
                 case "-n":
-                    String strDimension = getNextArgs(args);
-                    int newTailleEchec = Integer.parseInt(strDimension);
+                    final String strDimension = getNextArgs(args);
+                    final int newTailleEchec = Integer.parseInt(strDimension);
                     
                     if(newTailleEchec > 0) {
                         _tailleEchec = newTailleEchec;
@@ -60,7 +61,7 @@ public class ReadingArguments {
                     
                 case "-t":
                 case "-tour":
-                    int newNbrTour = getIntNextArgs(args);
+                    final int newNbrTour = getIntNextArgs(args);
                     if(newNbrTour >= 0) {
                         _nbrTour = newNbrTour;
                     } else {
@@ -74,7 +75,7 @@ public class ReadingArguments {
                     
                 case "-c":
                 case "-cavalier":
-                    int newNbrCavalier = getIntNextArgs(args);
+                    final int newNbrCavalier = getIntNextArgs(args);
                     if(newNbrCavalier >= 0) {
                         _nbrCavalier = newNbrCavalier;
                     } else {
@@ -88,7 +89,7 @@ public class ReadingArguments {
                     
                 case "-f":
                 case "-fou":
-                    int newNbrFou = getIntNextArgs(args);
+                    final int newNbrFou = getIntNextArgs(args);
                     if(newNbrFou >= 0) {
                         _nbrFou = newNbrFou;
                     } else {
@@ -116,8 +117,8 @@ public class ReadingArguments {
         
     }
     
-    private int getIntNextArgs(String args[]) throws IllegalArgumentException {
-        String intValue = getNextArgs(args);
+    private int getIntNextArgs(final String args[]) throws IllegalArgumentException {
+        final String intValue = getNextArgs(args);
         int value = -1;
         try {
             value = Integer.parseInt(intValue);
@@ -128,7 +129,7 @@ public class ReadingArguments {
         return value;
     }
     
-    private String getNextArgs(String args[]) throws IllegalArgumentException {
+    private String getNextArgs(final String args[]) throws IllegalArgumentException {
         if(_index >= args.length) {
             throw new IllegalArgumentException("Le nombre d'arguments semble "
                     + "incorrecte (n'avez vous rien oublié après: " 
@@ -190,6 +191,13 @@ public class ReadingArguments {
      */
     public boolean isUtf8() {
         return _utf8;
+    }
+
+    /**
+     * @return the _probIndependance
+     */
+    public boolean isProbIndependance() {
+        return _probIndependance;
     }
     
 }

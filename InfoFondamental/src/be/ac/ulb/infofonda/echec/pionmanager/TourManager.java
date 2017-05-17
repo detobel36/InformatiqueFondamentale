@@ -11,22 +11,24 @@ public class TourManager extends OpaquePionManager {
     private static final String NOM = "Tour";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
-    public TourManager(int nbrTour, int tailleEchec) {
+    public TourManager(final int nbrTour, final int tailleEchec) {
         super(NOM, nbrTour, tailleEchec, 'T', '♜');
     }
 
     @Override
-    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        ArrayList<Integer[]> res = new ArrayList<Integer[]>();
+    public ArrayList<Integer[]> getAccessibleCase(final int currentLigne, 
+            final int currentColonne) {
+        
+        final ArrayList<Integer[]> res = new ArrayList<>();
         for(int decalageLigne = -currentLigne; currentLigne + decalageLigne < _tailleEchec; ++decalageLigne) {
-            int newLigne = currentLigne + decalageLigne;
+            final int newLigne = currentLigne + decalageLigne;
             if(newLigne != currentLigne) {
                 res.add(getCoord(newLigne, currentColonne));
             }
         }
         
         for(int decalageCol = -currentColonne; currentColonne + decalageCol < _tailleEchec; ++decalageCol) {
-            int newCol = currentColonne + decalageCol;
+            final int newCol = currentColonne + decalageCol;
             if(newCol != currentColonne) {
                 res.add(getCoord(currentLigne, newCol));
             }
@@ -41,14 +43,15 @@ public class TourManager extends OpaquePionManager {
     }
 
     @Override
-    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, int currentColonne, 
-            int currentDecalageLigne, int currentDecalageColonne) {
-        ArrayList<Integer[]> result = new ArrayList<Integer[]>();
+    protected ArrayList<Integer[]> getEmptyCase(final int currentLigne, 
+            final int currentColonne, final int currentDecalageLigne, 
+            final int currentDecalageColonne) {
+        final ArrayList<Integer[]> result = new ArrayList<>();
         
         // Si on bouge uniquement de colonne
         if(currentLigne == currentDecalageLigne) {
-            int minCol = Math.min(currentColonne, currentDecalageColonne);
-            int maxCol = Math.max(currentColonne, currentDecalageColonne);
+            final int minCol = Math.min(currentColonne, currentDecalageColonne);
+            final int maxCol = Math.max(currentColonne, currentDecalageColonne);
             
             for(int col = minCol; col < maxCol; ++col) {
                 if(col != currentDecalageColonne) {
@@ -57,8 +60,8 @@ public class TourManager extends OpaquePionManager {
             }
             
         } else if(currentColonne == currentDecalageColonne) {
-            int minLigne = Math.min(currentLigne, currentDecalageLigne);
-            int maxLigne = Math.max(currentLigne, currentDecalageLigne);
+            final int minLigne = Math.min(currentLigne, currentDecalageLigne);
+            final int maxLigne = Math.max(currentLigne, currentDecalageLigne);
             
             for(int ligne = minLigne; ligne < maxLigne; ++ligne) {
                 if(ligne != currentDecalageLigne) {

@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.TypeProbleme;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
@@ -18,17 +19,23 @@ class VideManager extends PionManager {
     }
 
     @Override
-    public ArrayList<Integer[]> getAccessibleCase(int currentLigne, int currentColonne) {
-        ArrayList<Integer[]> res = new ArrayList<>();
+    public ArrayList<Integer[]> getAccessibleCase(final int currentLigne, final int currentColonne) {
+        final ArrayList<Integer[]> res = new ArrayList<>();
         res.add(getCoord(currentLigne, currentColonne));
         return res;
     }
     
     @Override
-    protected Constraint getConstraintToAttackFrom(Model model, IntVar[][] variables,
-            int ligne, int col, int ligneDep, int colDep) {
-        // la case actuelle doit être différente du vide
-        Constraint containte = model.arithm(variables[ligne][col], "!=", getIndex());
+    protected Constraint getConstraintCaseAttackToAnother(final Model model, 
+            final IntVar[][] variables, final int ligne, final int col, 
+            final int ligneDep, final int colDep, final TypeProbleme typeProbleme) {
+        Constraint containte;
+        if(typeProbleme.equals(TypeProbleme.DOMINATION)) {
+            // la case actuelle doit être différente du vide
+            containte = model.arithm(variables[ligne][col], "!=", getIndex());
+        } else {
+            containte = model.arithm(variables[ligne][col], "=", getIndex());
+        }
         return containte;
     }
     
