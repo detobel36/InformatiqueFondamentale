@@ -1,4 +1,4 @@
-package be.ac.ulb.infofonda;
+package be.ac.ulb.infofonda.echiquier;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;

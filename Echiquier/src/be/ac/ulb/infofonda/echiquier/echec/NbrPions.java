@@ -1,4 +1,4 @@
-package be.ac.ulb.infofonda.echec;
+package be.ac.ulb.infofonda.echiquier.echec;
 
 /**
  * Représente la manière dont on veut limiter le nombre de pion.  Dans le cas 

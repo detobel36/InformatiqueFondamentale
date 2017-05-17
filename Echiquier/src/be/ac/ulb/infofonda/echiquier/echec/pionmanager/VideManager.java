@@ -1,6 +1,6 @@
-package be.ac.ulb.infofonda.echec.pionmanager;
+package be.ac.ulb.infofonda.echiquier.echec.pionmanager;
 
-import be.ac.ulb.infofonda.echec.TypeProbleme;
+import be.ac.ulb.infofonda.echiquier.echec.TypeProbleme;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;

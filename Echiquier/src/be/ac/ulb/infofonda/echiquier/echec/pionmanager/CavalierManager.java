@@ -1,6 +1,6 @@
-package be.ac.ulb.infofonda.echec.pionmanager;
+package be.ac.ulb.infofonda.echiquier.echec.pionmanager;
 
-import be.ac.ulb.infofonda.echec.NbrPions;
+import be.ac.ulb.infofonda.echiquier.echec.NbrPions;
 import java.util.ArrayList;
 
 /**

@@ -1,7 +1,7 @@
-package be.ac.ulb.infofonda;
+package be.ac.ulb.infofonda.echiquier;
 
-import be.ac.ulb.infofonda.echec.NbrPions;
-import be.ac.ulb.infofonda.echec.TypeProbleme;
+import be.ac.ulb.infofonda.echiquier.echec.NbrPions;
+import be.ac.ulb.infofonda.echiquier.echec.TypeProbleme;
 
 /**
  *

@@ -1,6 +1,6 @@
-package be.ac.ulb.infofonda.echec;
+package be.ac.ulb.infofonda.echiquier.echec;
 
-import be.ac.ulb.infofonda.echec.pionmanager.PionManager;
+import be.ac.ulb.infofonda.echiquier.echec.pionmanager.PionManager;
 import java.util.ArrayList;
 import java.util.List;
 import org.chocosolver.solver.Model;
