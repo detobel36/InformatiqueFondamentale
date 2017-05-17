@@ -19,31 +19,33 @@ public class Echec {
     
     private final int _tailleEchec;
     private IntVar[][] _variables;
-    private boolean _utf8;
-    
-    
-    public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
-            final int tailleEchec, final TypeProbleme typeProbleme) {
-        this(nbrFou, nbrCavalier, nbrTour, tailleEchec, typeProbleme, false);
-    }
+    private final boolean _utf8;
+    private final boolean _debug;
         
     public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
-            final int tailleEchec, final TypeProbleme typeProbleme, final boolean utf8) {
+            final int tailleEchec, final TypeProbleme typeProbleme, 
+            final boolean allResults, final boolean utf8, final boolean debug) {
         _model = new Model("Echec");
         
         _tailleEchec = tailleEchec;
         _utf8 = utf8;
+        _debug = debug;
         
         PionManager.initAllManager(nbrFou, nbrCavalier, nbrTour, _tailleEchec);
         createVariables();
         initConstraints(typeProbleme);
-        solveProblem();
+        solveProblem(allResults);
     }
     
     
     ////// Private //////
     
-    private void solveProblem() {
+    /**
+     * Resolv problem
+     * 
+     * @param allResult True if we will all the results
+     */
+    private void solveProblem(boolean allResult) {
         final Solver solver = _model.getSolver();
         int i = 0;
         
@@ -58,14 +60,21 @@ public class Echec {
         if(optimiseVar != null) {
             final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
             for(final Solution solution : allSolution) {
-                System.out.println("Solution ! " + (++i));
+                System.out.println("Solution: " + (++i));
                 viewResult(solution);
+                if(!allResult) {
+                    break;
+                }
             }
             
         } else {
             while(solver.solve()) {
-                System.out.println("Solution ! " + (++i));
+                System.out.println("Solution: " + (++i));
                 viewResult(null);
+                
+                if(!allResult) {
+                    break;
+                }
             }
         }
         
@@ -76,8 +85,6 @@ public class Echec {
     }
     
     private void createVariables() {
-        System.out.println("Nbr de pion : " + PionManager.getNbrPionDomaine());
-        
         _variables = _model.intVarMatrix(_tailleEchec, _tailleEchec, 0, 
                 PionManager.getNbrPionDomaine()-1);
         // Il peut prendre les valeurs 0 (vide), 1, 2, 3 {pion, fou, tour}
@@ -85,14 +92,13 @@ public class Echec {
     
     private void initConstraints(final TypeProbleme probleme) {
         PionManager.applyAllContraintNbrPion(_model, _variables);
-        PionManager.applyAllConstraints(_model, _variables, probleme);
+        PionManager.applyAllConstraints(_model, _variables, probleme, _debug);
     }
     
     
     ///////////////// DISPLAY RESULTS /////////////////
     
     private void viewResult(final Solution solution) {
-        System.out.println("-----------------------");
         for(int ligne = 0; ligne < _tailleEchec; ++ligne) {
             String strLigne = addBordureBegin(ligne);
             
@@ -110,7 +116,7 @@ public class Echec {
             
             System.out.println(strLigne);
         }
-        System.out.println("-----------------------");
+        System.out.println("");
     }
     
     private String addBordureBegin(final int currentLigne) {

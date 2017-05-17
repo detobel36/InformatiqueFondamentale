@@ -1,6 +1,7 @@
 package be.ac.ulb.infofonda;
 
 import be.ac.ulb.infofonda.echec.NbrPions;
+import be.ac.ulb.infofonda.echec.TypeProbleme;
 
 /**
  *
@@ -16,7 +17,10 @@ public class ReadingArguments {
     private NbrPions _nbrTour = new NbrPions(0);
     private NbrPions _nbrCavalier = new NbrPions(0);
     private NbrPions _nbrFou = new NbrPions(0);
+    private TypeProbleme _typeProbleme = null;
     private boolean _utf8 = false;
+    private boolean _viewAll = false;
+    private boolean _debug = false;
     
     
     public ReadingArguments(final String[] args) throws IllegalArgumentException {
@@ -29,19 +33,34 @@ public class ReadingArguments {
             
             switch(args[_index]) {
                 
+                /////// AIDE ///////
+                
                 case "-h":
                 case "-help":
                     printHelp();
                     break;
                     
+                    
                 /////// TYPE DE PROBLEME ///////
+                    
                 case "-d":
-                    _probDomination = true;
+                    if(_typeProbleme == null) {
+                        _typeProbleme = TypeProbleme.DOMINATION;
+                    } else {
+                        throw new IllegalArgumentException("Le type de problème"
+                                + " a déjà été définit !");
+                    }
                     break;
                     
                 case "-i":
-                    _probIndependance = true;
+                    if(_typeProbleme == null) {
+                        _typeProbleme = TypeProbleme.INDEPENDANCE;
+                    } else {
+                        throw new IllegalArgumentException("Le type de problème"
+                                + " a déjà été définit !");
+                    }
                     break;
+                    
                     
                 /////// TAILLE ECHIQUIER ///////
                     
@@ -100,11 +119,28 @@ public class ReadingArguments {
                     break;
                     
                     
+                /////// All ///////
+                    
+                case "-all":
+                    _viewAll = true;
+                    break;
+                    
+                    
                 /////// UTF8 ///////
                     
                 case "-utf8":
                     _utf8 = true;
                     break;
+                
+                    
+                /////// DEBUG ///////
+                    
+                case "-debug":
+                    _debug = true;
+                    break;
+                    
+                    
+                /////// DEFAULT ///////
                     
                 default:
                     throw new IllegalArgumentException("Cet argument est inconnu "
@@ -170,6 +206,8 @@ public class ReadingArguments {
         System.out.println("\t-f,-fou <nbr/opti>\tNombre de fou");
         System.out.println("\t-c,-cavalier <nbr/opti>\tNombre de cavalier");
         System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
+        System.out.println("\t-all\t\t\tAffiche tous les résultats possibles");
+        System.out.println("\t-debug\t\t\tAffiche les messages de débug");
         System.out.println("");
         System.out.println("Information:");
         System.out.println("\t<nbr/opti>");
@@ -179,10 +217,10 @@ public class ReadingArguments {
     }
 
     /**
-     * @return the probDomination
+     * @return le type de problème
      */
-    public boolean isProbDomination() {
-        return _probDomination;
+    public TypeProbleme getTypeProbleme() {
+        return _typeProbleme;
     }
 
     /**
@@ -225,6 +263,14 @@ public class ReadingArguments {
      */
     public boolean isProbIndependance() {
         return _probIndependance;
+    }
+    
+    public boolean viewAll() {
+        return _viewAll;
+    }
+    
+    public boolean isDebug() {
+        return _debug;
     }
     
 }

@@ -210,7 +210,7 @@ public abstract class PionManager {
     }
     
     public static void applyAllConstraints(final Model model, final IntVar[][] variables,
-            final TypeProbleme typeProbleme) {
+            final TypeProbleme typeProbleme, final boolean debug) {
         
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
@@ -225,7 +225,7 @@ public abstract class PionManager {
                     
                     if(pionContrainte != null) {
                         allContrainte.add(pionContrainte);
-                    } else {
+                    } else if(debug || DEBUG) {
                         System.err.println("Aucune contrainte pour le pion " + 
                                 pion.getNom() + " en coordonnée: "
                                 + "(" + ligne + ", " + col + ")");

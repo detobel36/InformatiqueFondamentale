@@ -25,17 +25,13 @@ public class Main {
             final NbrPions nbrCavalier = readingArgs.getNbrCavalier();
             final NbrPions nbrTour = readingArgs.getNbrTour();
             final boolean utf8 = readingArgs.isUtf8();
-            // TODO: changer par TypeProbleme
-            final boolean isDomination = readingArgs.isProbDomination();
-            final boolean isIndependance = readingArgs.isProbIndependance();
+            final boolean viewAll = readingArgs.viewAll();
+            final boolean isDebug = readingArgs.isDebug();
+            final TypeProbleme typeProbleme = readingArgs.getTypeProbleme();
             
-            if(isIndependance && isDomination) {
-                System.out.println("Erreur vous ne pouvez pas demander la "
-                        + "résolution des deux problèmes en même temps");
-            } else if(isDomination) {
-                new Echec(nbrFou, nbrCavalier, nbrTour, tailleEchec, TypeProbleme.DOMINATION, utf8);
-            } else if(isIndependance) {
-                new Echec(nbrFou, nbrCavalier, nbrTour, tailleEchec, TypeProbleme.INDEPENDANCE, utf8);
+            if(typeProbleme != null) {
+                new Echec(nbrFou, nbrCavalier, nbrTour, tailleEchec, 
+                        typeProbleme, viewAll, utf8, isDebug);
             } else {
                 System.out.println("Aucun problème n'a été sélectionné");
             }
