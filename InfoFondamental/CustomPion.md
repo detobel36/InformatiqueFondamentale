@@ -9,9 +9,9 @@ Pour implémenter son propre pion, il faut créer une class qui devra hérité s
 La class qui permettra de gérer ce nouveau pion devra définir une méthode et un constructeur.  Pour les class opaque, une méthode en plus devra être intégrer.
 
 
-**Canvas:**
-Le canvas de base pour créer une class est le suivant:
-```java
+**Canvas:**                           
+Le canvas de base pour créer une class est le suivant:           
+```java        
 public class TestManager extends OpaquePionManager {
 
     public TestManager(NbrPions nbrPion, int tailleEchec) {
@@ -27,11 +27,13 @@ public class TestManager extends OpaquePionManager {
      * Uniquement pour les cases opaques
      */
     @Override
-    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
+    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, int currentColonne, int currentDecalageLigne, 
+        int currentDecalageColonne) {
         // Code
     }
 
-}```
+}
+```
 
 Le constructeur doit appeller le constructeur parent en précisant le nom du pion (le paramètre `"nomPion"`) (uniquement utilisé pour du débug) ainsi que le symbole qui sera utiilisé pour les résultats lors de l'affichage classique ou UTF-8 (respectivement `'S'` et `'8'` dans cet exemple).
 
