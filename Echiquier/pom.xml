@@ -14,7 +14,7 @@
                 <archive>
                   <manifest>
                     <addClasspath>true</addClasspath>
-                    <mainClass>be.ac.ulb.infofonda.Main</mainClass>
+                    <mainClass>be.ac.ulb.infofonda.echiquier.Main</mainClass>
                   </manifest>
                 </archive>
               </configuration>
@@ -33,7 +33,7 @@
                     <archive>
                         <manifest>
                           <addClasspath>true</addClasspath>
-                          <mainClass>be.ac.ulb.infofonda.Main</mainClass>
+                          <mainClass>be.ac.ulb.infofonda.echiquier.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
