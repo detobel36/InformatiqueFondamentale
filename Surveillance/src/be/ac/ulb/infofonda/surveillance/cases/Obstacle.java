@@ -12,7 +12,7 @@ public class Obstacle extends CaseManager {
     private static Obstacle _instance = null;
     
     public Obstacle() {
-        super('*');
+        super('*', 0, 0, false);
     }
     
     @Override
@@ -20,6 +20,12 @@ public class Obstacle extends CaseManager {
         return new ArrayList<>();
     }
     
+    @Override
+    protected ArrayList<Integer[]> getEmptyCase(final int ligne, final int col, 
+            final int ligneAcc, final int colAcc) {
+        throw new UnsupportedOperationException("Vous ne pouvez pas appeller cette méthode "
+                + "sur cet objet");
+    }
     
     ///////////////////// STATIC /////////////////////
     

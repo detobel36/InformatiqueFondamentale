@@ -17,23 +17,34 @@ public abstract class CaseManager {
     private static boolean DEBUG = true;
     
     protected final char _symbole;
-    protected int _index;
+    protected final int _index;
+    protected final int _maxLigne;
+    protected final int _maxColonne;
+    protected final boolean _mustBeOptimised;
     
-    protected CaseManager(final char symbole) {
+    protected CaseManager(final char symbole, final int maxLigne, final int maxCol,
+            final boolean mustBeOptimise) {
         _symbole = symbole;
         _index = allCases.size();
+        _maxLigne = maxLigne;
+        _maxColonne = maxCol;
+        _mustBeOptimised = mustBeOptimise;
         
         printDebug("Manager: " + symbole + " (index: " + _index + ")");
         
         allCases.add(this);
     }
     
-    public char getSymbole() {
-        return _symbole;
+    public String getSymbole() {
+        return ""+_symbole;
     }
     
     protected int getIndex() {
         return _index;
+    }
+    
+    protected boolean mustBeOptimised() {
+        return _mustBeOptimised;
     }
     
     protected abstract ArrayList<Integer[]> getAccessibleCase(int ligne, int col);
@@ -87,9 +98,31 @@ public abstract class CaseManager {
         }
     }
     
+    protected static IntVar[] convertDim2ToDim1(final IntVar[][] variables) {
+        final ArrayList<IntVar> allVar = new ArrayList<>();
+        for(final IntVar[] ligneVar : variables) {
+            for(final IntVar var : ligneVar) {
+                allVar.add(var);
+            }
+        }
+        return allVar.toArray(new IntVar[]{});
+    }
+    
+    protected static Integer[] getCoord(final int ligne, final int col) {
+        final Integer[] tempRes = new Integer[2];
+        tempRes[0] = ligne;
+        tempRes[1] = col;
+        return tempRes;
+    }
+    
     // PUBLIC 
     public static int getNbrCaseDomaine() {
-        return allCases.size();
+        return allCases.size()-1; // On retire le type "obstacle"
+    }
+    
+    public static String caseIndex2String(final int index) {
+        final CaseManager caseManager = allCases.get(index);
+        return (caseManager != null) ? caseManager.getSymbole() : " ";
     }
     
     public static void applyAllConstraints(final Model model, final IntVar[][] variables) {
@@ -99,6 +132,9 @@ public abstract class CaseManager {
                 printDebug("Contrainte pour (" + ligne + ", " + col + ")");
                 
                 final ArrayList<Constraint> allContrainte = new ArrayList<>();
+                // La case est bonne s'il est différente du vide
+//                allContrainte.add(model.arithm(variables[ligne][col], "!=", Vide.getInstance().getIndex()));
+                
                 for(final CaseManager specificCase : allCases) {
                     if(specificCase.equals(Obstacle.getInstance())) {
                         continue;
@@ -112,8 +148,8 @@ public abstract class CaseManager {
                     if(caseContrainte != null) {
                         allContrainte.add(caseContrainte);
                     } else {
-                        System.err.println("Aucune contrainte pour la case " + 
-                                specificCase.getSymbole() + " en coordonnée: "
+                        System.err.println("Aucune contrainte pour la case '" + 
+                                specificCase.getSymbole() + "' en coordonnée: "
                                 + "(" + ligne + ", " + col + ")");
                     }
                 }
@@ -137,14 +173,43 @@ public abstract class CaseManager {
         }
     }
     
-    public static void initAllManager() {
+    public static void initAllManager(final int maxLigne, final int maxCol) {
         Vide.getInstance();
-        Obstacle.getInstance();
         
-        new Capteur(Direction.NORD);
-        new Capteur(Direction.SUD);
-        new Capteur(Direction.EST);
-        new Capteur(Direction.OUEST);
+        new Capteur(Direction.NORD, maxLigne, maxCol);
+        new Capteur(Direction.SUD, maxLigne, maxCol);
+        new Capteur(Direction.EST, maxLigne, maxCol);
+        new Capteur(Direction.OUEST, maxLigne, maxCol);
+        Obstacle.getInstance();
+    }
+    
+    public static IntVar getOptimiseVar(final Model model, final int ligne, 
+            final int col, IntVar[][] variables) {
+        
+        final ArrayList<Integer> optimiseIndex = new ArrayList<>();
+        for(final CaseManager specificCase : allCases) {
+            if(specificCase.mustBeOptimised()) {
+                optimiseIndex.add(specificCase.getIndex());
+            }
+        }
+        
+        IntVar result = null;
+        if(!optimiseIndex.isEmpty()) {
+            
+            int[] allIndex = new int[optimiseIndex.size()];
+            int i = 0;
+            for(final int index : optimiseIndex) {
+                allIndex[i] = index;
+                ++i;
+            }
+            
+            result = model.intVar("Optimisation", 0, ligne * col);
+            final IntVar[] allVar = convertDim2ToDim1(variables);
+
+            model.among(result, allVar, allIndex).post();
+        }
+        
+        return result;
     }
     
 }
