@@ -56,8 +56,6 @@ public class Echec {
         
         final IntVar optimiseVar = PionManager.getOptimiseVar(_model, _tailleEchec, _variables);
         if(optimiseVar != null) {
-//        IntVar obj = _model.intVar("pion", 0, _tailleEchec^2-1);
-            
             final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
             for(final Solution solution : allSolution) {
                 System.out.println("Solution ! " + (++i));

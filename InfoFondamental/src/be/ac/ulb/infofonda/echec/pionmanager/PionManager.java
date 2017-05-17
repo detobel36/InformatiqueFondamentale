@@ -274,7 +274,7 @@ public abstract class PionManager {
                 ++i;
             }
             
-            result = model.intVar("Optimisation", 0, tailleEchec^2-1);
+            result = model.intVar("Optimisation", 0, (int) Math.pow(tailleEchec, 2));
             final IntVar[] allVar = convertDim2ToDim1(variables);
 
             model.among(result, allVar, allIndex).post();
