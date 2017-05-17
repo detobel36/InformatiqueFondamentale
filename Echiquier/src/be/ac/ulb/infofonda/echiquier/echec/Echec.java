@@ -21,7 +21,7 @@ public class Echec {
     private IntVar[][] _variables;
     private final boolean _utf8;
     private final boolean _debug;
-        
+    
     public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
             final int tailleEchec, final TypeProbleme typeProbleme, 
             final boolean allResults, final boolean utf8, final boolean debug) {
@@ -81,7 +81,6 @@ public class Echec {
         if(i == 0) {
             System.err.println("Aucune solution n'a été trouvée");
         }
-        
     }
     
     private void createVariables() {

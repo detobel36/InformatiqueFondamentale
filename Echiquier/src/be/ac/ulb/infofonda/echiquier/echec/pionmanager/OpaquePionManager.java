@@ -64,7 +64,8 @@ public abstract class OpaquePionManager extends PionManager {
                 final Constraint newConstraint = model.arithm(
                         variables[emptyCoord[0]][emptyCoord[1]], "=", 
                         VideManager.getInstance().getIndex());
-                strDebug += "(" + emptyCoord[0] + ", " + emptyCoord[1] + ") = " + VideManager.getInstance().getIndex() + " AND ";
+                strDebug += "(" + emptyCoord[0] + ", " + emptyCoord[1] + ") = " + 
+                        VideManager.getInstance().getIndex() + " AND ";
                 resCase = model.and(resCase, newConstraint);
             }
             printDebug("\t" + strDebug);
