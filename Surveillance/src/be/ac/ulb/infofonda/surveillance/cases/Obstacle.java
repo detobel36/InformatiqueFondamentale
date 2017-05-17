@@ -1,16 +1,23 @@
 package be.ac.ulb.infofonda.surveillance.cases;
 
+import java.util.ArrayList;
+
 /**
- * Case représentant un obstacle
+ * CaseManager représentant un obstacle
  * 
  * @author Detobel
  */
-public class Obstacle extends Case {
+public class Obstacle extends CaseManager {
     
     private static Obstacle _instance = null;
     
     public Obstacle() {
         super('*');
+    }
+    
+    @Override
+    protected ArrayList<Integer[]> getAccessibleCase(int ligne, int col) {
+        return new ArrayList<>();
     }
     
     

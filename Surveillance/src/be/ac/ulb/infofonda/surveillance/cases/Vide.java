@@ -5,7 +5,7 @@ package be.ac.ulb.infofonda.surveillance.cases;
  * 
  * @author Detobel
  */
-public class Vide extends Case {
+public class Vide extends CaseManager {
     
     private static Vide _instance = null;
     
