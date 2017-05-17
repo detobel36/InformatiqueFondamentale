@@ -9,11 +9,10 @@ import java.util.ArrayList;
  */
 public class CavalierManager extends PionManager {
     
-    private static final String NOM = "Cavalier";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public CavalierManager(final NbrPions nbrCavalier, final int tailleEchec) {
-        super(NOM, nbrCavalier, tailleEchec, 'C', '♞');
+        super("Cavalier", nbrCavalier, tailleEchec, 'C', '♞');
     }
 
     @Override

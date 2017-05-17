@@ -9,11 +9,10 @@ import java.util.ArrayList;
  */
 public class FouManager extends OpaquePionManager {
 
-    private static final String NOM = "Fou";
     private static final boolean DEBUG_DEPLACEMENT = false;
     
     public FouManager(final NbrPions nbrFou, final int tailleEchec) {
-        super(NOM, nbrFou, tailleEchec, 'F', '♝');
+        super("Fou", nbrFou, tailleEchec, 'F', '♝');
     }
     
     @Override

@@ -9,11 +9,10 @@ import java.util.ArrayList;
  */
 public class TourManager extends OpaquePionManager {
     
-    private static final String NOM = "Tour";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
     public TourManager(final NbrPions nbrTour, final int tailleEchec) {
-        super(NOM, nbrTour, tailleEchec, 'T', '♜');
+        super("Tour", nbrTour, tailleEchec, 'T', '♜');
     }
 
     @Override
