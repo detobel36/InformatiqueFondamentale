@@ -1,7 +1,10 @@
 package be.ac.ulb.infofonda.echec;
 
 import be.ac.ulb.infofonda.echec.pionmanager.PionManager;
+import java.util.ArrayList;
+import java.util.List;
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
@@ -19,12 +22,12 @@ public class Echec {
     private boolean _utf8;
     
     
-    public Echec(final int nbrFou, final int nbrCavalier, final int nbrTour, 
+    public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
             final int tailleEchec, final TypeProbleme typeProbleme) {
         this(nbrFou, nbrCavalier, nbrTour, tailleEchec, typeProbleme, false);
     }
         
-    public Echec(final int nbrFou, final int nbrCavalier, final int nbrTour, 
+    public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
             final int tailleEchec, final TypeProbleme typeProbleme, final boolean utf8) {
         _model = new Model("Echec");
         
@@ -43,10 +46,31 @@ public class Echec {
     private void solveProblem() {
         final Solver solver = _model.getSolver();
         int i = 0;
-        while(solver.solve()) {
-            System.out.println("Solution ! " + (++i));
-            viewResult();
+        
+        final ArrayList<IntVar> allVar = new ArrayList<>();
+        for(final IntVar[] ligneVar : _variables) {
+            for(final IntVar var : ligneVar) {
+                allVar.add(var);
+            }
         }
+        
+        final IntVar optimiseVar = PionManager.getOptimiseVar(_model, _tailleEchec, _variables);
+        if(optimiseVar != null) {
+//        IntVar obj = _model.intVar("pion", 0, _tailleEchec^2-1);
+            
+            final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
+            for(final Solution solution : allSolution) {
+                System.out.println("Solution ! " + (++i));
+                viewResult(solution);
+            }
+            
+        } else {
+            while(solver.solve()) {
+                System.out.println("Solution ! " + (++i));
+                viewResult(null);
+            }
+        }
+        
         if(i == 0) {
             System.err.println("Aucune solution n'a été trouvée");
         }
@@ -69,13 +93,18 @@ public class Echec {
     
     ///////////////// DISPLAY RESULTS /////////////////
     
-    private void viewResult() {
+    private void viewResult(final Solution solution) {
         System.out.println("-----------------------");
         for(int ligne = 0; ligne < _tailleEchec; ++ligne) {
             String strLigne = addBordureBegin(ligne);
             
             for(int col = 0; col < _tailleEchec; ++col) {
-                final int value = _variables[ligne][col].getValue();
+                int value;
+                if(solution != null) { 
+                    value = solution.getIntVal(_variables[ligne][col]); 
+                } else {
+                    value = _variables[ligne][col].getValue(); 
+                }
                 strLigne += PionManager.pionIndex2String(value, _utf8);
                 strLigne += addBordureCentral(col);
             }

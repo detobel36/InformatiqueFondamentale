@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,7 @@ public class CavalierManager extends PionManager {
     private static final String NOM = "Cavalier";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
-    public CavalierManager(final int nbrCavalier, final int tailleEchec) {
+    public CavalierManager(final NbrPions nbrCavalier, final int tailleEchec) {
         super(NOM, nbrCavalier, tailleEchec, 'C', '♞');
     }
 

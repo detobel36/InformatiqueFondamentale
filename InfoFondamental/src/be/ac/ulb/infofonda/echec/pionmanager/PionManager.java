@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
 import be.ac.ulb.infofonda.echec.TypeProbleme;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
@@ -18,16 +19,17 @@ public abstract class PionManager {
     
     private String _nom;
     protected int _index;
-    protected final int _nbrPion;
+    protected final NbrPions _nbrPion;
     protected final int _tailleEchec;
     protected final char _symbole;
     protected final char _utf8Symbole;
     
+    
     protected PionManager(final String nomPion, final int tailleEchec) {
-        this(nomPion, -1, tailleEchec, '*', ' ');
+        this(nomPion, NbrPions.getDefaultPion(), tailleEchec, '*', ' ');
     }
     
-    protected PionManager(final String nomPion, final int nbrPion, 
+    protected PionManager(final String nomPion, final NbrPions nbrPion, 
             final int tailleEchec, final char symbole, final char utf8Symbole) {
         _nom = nomPion;
         _index = allPion.size();
@@ -59,6 +61,10 @@ public abstract class PionManager {
     
     protected String getNom() {
         return _nom + "-" + _index;
+    }
+    
+    protected NbrPions getNbrPion() {
+        return _nbrPion;
     }
     
     protected String getSymbole(final boolean utf8) {
@@ -140,16 +146,9 @@ public abstract class PionManager {
     }
     
     public void applyContraintNbrPion(final Model model, final IntVar[][] variables) {
-        if(_nbrPion >= 0) {
-            final ArrayList<IntVar> allVar = new ArrayList<>();
-            for(final IntVar[] ligneVar : variables) {
-                for(final IntVar var : ligneVar) {
-                    allVar.add(var);
-                }
-            }
-            
-            final IntVar intVar = model.intVar(_nbrPion);
-            model.among(intVar, allVar.toArray(new IntVar[]{}), new int[]{getIndex()}).post();
+        if(_nbrPion.isPositiveNumber()) {
+            final IntVar intVar = model.intVar(_nbrPion.getNombre());
+            model.among(intVar, convertDim2ToDim1(variables), new int[]{getIndex()}).post();
         }
     }
     
@@ -166,7 +165,18 @@ public abstract class PionManager {
     }
     
     
-    ////////////////////// STATIC //////////////////////
+    //////////////////////////////// STATIC ////////////////////////////////
+    
+    // PROTECTED
+    protected static IntVar[] convertDim2ToDim1(final IntVar[][] variables) {
+        final ArrayList<IntVar> allVar = new ArrayList<>();
+        for(final IntVar[] ligneVar : variables) {
+            for(final IntVar var : ligneVar) {
+                allVar.add(var);
+            }
+        }
+        return allVar.toArray(new IntVar[]{});
+    }
     
     protected static Integer[] getCoord(final int ligne, final int col) {
         final Integer[] tempRes = new Integer[2];
@@ -181,6 +191,7 @@ public abstract class PionManager {
         }
     }
     
+    // PUBLIC 
     public static int getNbrPionDomaine() {
         return allPion.size();
     }
@@ -190,8 +201,8 @@ public abstract class PionManager {
         return (pion != null) ? pion.getSymbole(utf8) : " ";
     }
     
-    public static void initAllManager(final int nbrFou, final int nbrCavalier, 
-            final int nbrTour, final int tailleEchec) {
+    public static void initAllManager(final NbrPions nbrFou, final NbrPions nbrCavalier, 
+            final NbrPions nbrTour, final int tailleEchec) {
         VideManager.getInstance();
         new FouManager(nbrFou, tailleEchec);
         new CavalierManager(nbrCavalier, tailleEchec);
@@ -200,6 +211,7 @@ public abstract class PionManager {
     
     public static void applyAllConstraints(final Model model, final IntVar[][] variables,
             final TypeProbleme typeProbleme) {
+        
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
                 printDebug("Contrainte pour (" + ligne + ", " + col + ")");
@@ -232,6 +244,43 @@ public abstract class PionManager {
         for(final PionManager pion : allPion) {
             pion.applyContraintNbrPion(model, variables);
         }
+    }
+    
+    /**
+     * Permet de récupérer la variable a optimiser
+     * 
+     * @param model le modèle sur lequel on va devoir faire des optimisations
+     * @param tailleEchec la taille de l'échiquier
+     * @param variables la liste des variables où l'on devra mettre une condition
+     * @return la variable que le solver doit optimiser
+     */
+    public static IntVar getOptimiseVar(final Model model, final int tailleEchec, 
+            final IntVar[][] variables) {
+        
+        final ArrayList<Integer> optimiseIndex = new ArrayList<>();
+        for(final PionManager pionManager : allPion) {
+            if(pionManager.getNbrPion().isOptimisation()) {
+                optimiseIndex.add(pionManager.getIndex());
+            }
+        }
+        
+        IntVar result = null;
+        if(!optimiseIndex.isEmpty()) {
+            
+            int[] allIndex = new int[optimiseIndex.size()];
+            int i = 0;
+            for(final int index : optimiseIndex) {
+                allIndex[i] = index;
+                ++i;
+            }
+            
+            result = model.intVar("Optimisation", 0, tailleEchec^2-1);
+            final IntVar[] allVar = convertDim2ToDim1(variables);
+
+            model.among(result, allVar, allIndex).post();
+        }
+        
+        return result;
     }
     
 }

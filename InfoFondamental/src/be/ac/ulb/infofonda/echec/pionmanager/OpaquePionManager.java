@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
 import be.ac.ulb.infofonda.echec.TypeProbleme;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
@@ -13,7 +14,7 @@ import org.chocosolver.solver.variables.IntVar;
  */
 public abstract class OpaquePionManager extends PionManager {
     
-    protected OpaquePionManager(final String nomPion, final int nbrPion, 
+    protected OpaquePionManager(final String nomPion, final NbrPions nbrPion, 
             final int tailleEchec, final char symbole, final char utf8Symbole) {
         super(nomPion, nbrPion, tailleEchec, symbole, utf8Symbole);
     }

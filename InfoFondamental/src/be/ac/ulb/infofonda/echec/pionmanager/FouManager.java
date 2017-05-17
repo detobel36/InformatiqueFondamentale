@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,7 @@ public class FouManager extends OpaquePionManager {
     private static final String NOM = "Fou";
     private static final boolean DEBUG_DEPLACEMENT = false;
     
-    public FouManager(final int nbrFou, final int tailleEchec) {
+    public FouManager(final NbrPions nbrFou, final int tailleEchec) {
         super(NOM, nbrFou, tailleEchec, 'F', '♝');
     }
     

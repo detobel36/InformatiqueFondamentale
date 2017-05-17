@@ -1,6 +1,7 @@
 package be.ac.ulb.infofonda;
 
 import be.ac.ulb.infofonda.echec.Echec;
+import be.ac.ulb.infofonda.echec.NbrPions;
 import be.ac.ulb.infofonda.echec.TypeProbleme;
 
 /**
@@ -20,9 +21,9 @@ public class Main {
         
         if(readingArgs != null) {
             final int tailleEchec = readingArgs.getTailleEchec();
-            final int nbrFou = readingArgs.getNbrFou();
-            final int nbrCavalier = readingArgs.getNbrCavalier();
-            final int nbrTour = readingArgs.getNbrTour();
+            final NbrPions nbrFou = readingArgs.getNbrFou();
+            final NbrPions nbrCavalier = readingArgs.getNbrCavalier();
+            final NbrPions nbrTour = readingArgs.getNbrTour();
             final boolean utf8 = readingArgs.isUtf8();
             // TODO: changer par TypeProbleme
             final boolean isDomination = readingArgs.isProbDomination();

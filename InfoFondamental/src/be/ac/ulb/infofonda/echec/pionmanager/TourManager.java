@@ -1,5 +1,6 @@
 package be.ac.ulb.infofonda.echec.pionmanager;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,7 @@ public class TourManager extends OpaquePionManager {
     private static final String NOM = "Tour";
     private static final Boolean DEBUG_DEPLACEMENT = false;
     
-    public TourManager(final int nbrTour, final int tailleEchec) {
+    public TourManager(final NbrPions nbrTour, final int tailleEchec) {
         super(NOM, nbrTour, tailleEchec, 'T', '♜');
     }
 

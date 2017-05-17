@@ -1,5 +1,7 @@
 package be.ac.ulb.infofonda;
 
+import be.ac.ulb.infofonda.echec.NbrPions;
+
 /**
  *
  * @author Remy
@@ -11,9 +13,9 @@ public class ReadingArguments {
     private boolean _probDomination = false;
     private boolean _probIndependance = false;
     private int _tailleEchec = 1;
-    private int _nbrTour = 0;
-    private int _nbrCavalier = 0;
-    private int _nbrFou = 0;
+    private NbrPions _nbrTour = new NbrPions(0);
+    private NbrPions _nbrCavalier = new NbrPions(0);
+    private NbrPions _nbrFou = new NbrPions(0);
     private boolean _utf8 = false;
     
     
@@ -44,8 +46,7 @@ public class ReadingArguments {
                 /////// TAILLE ECHIQUIER ///////
                     
                 case "-n":
-                    final String strDimension = getNextArgs(args);
-                    final int newTailleEchec = Integer.parseInt(strDimension);
+                    final int newTailleEchec = getIntNextArgs(args);
                     
                     if(newTailleEchec > 0) {
                         _tailleEchec = newTailleEchec;
@@ -61,8 +62,8 @@ public class ReadingArguments {
                     
                 case "-t":
                 case "-tour":
-                    final int newNbrTour = getIntNextArgs(args);
-                    if(newNbrTour >= 0) {
+                    final NbrPions newNbrTour = getNbrPions(args);
+                    if(newNbrTour.isValide()) {
                         _nbrTour = newNbrTour;
                     } else {
                         throw new IllegalArgumentException("Le nombre de tour doit"
@@ -75,8 +76,8 @@ public class ReadingArguments {
                     
                 case "-c":
                 case "-cavalier":
-                    final int newNbrCavalier = getIntNextArgs(args);
-                    if(newNbrCavalier >= 0) {
+                    final NbrPions newNbrCavalier = getNbrPions(args);
+                    if(newNbrCavalier.isValide()) {
                         _nbrCavalier = newNbrCavalier;
                     } else {
                         throw new IllegalArgumentException("Le nombre de cavalier doit"
@@ -89,8 +90,8 @@ public class ReadingArguments {
                     
                 case "-f":
                 case "-fou":
-                    final int newNbrFou = getIntNextArgs(args);
-                    if(newNbrFou >= 0) {
+                    final NbrPions newNbrFou = getNbrPions(args);
+                    if(newNbrFou.isValide()) {
                         _nbrFou = newNbrFou;
                     } else {
                         throw new IllegalArgumentException("Le nombre de fou doit"
@@ -138,63 +139,89 @@ public class ReadingArguments {
         return args[++_index];
     }
     
+    private NbrPions getNbrPions(final String args[]) throws IllegalArgumentException {
+        final String nextValue = getNextArgs(args);
+        NbrPions result;
+        
+        if(nextValue.equalsIgnoreCase("opti")) {
+            result = NbrPions.getOptimalPion();
+        } else {
+            int value;
+            try {
+                value = Integer.parseInt(nextValue);
+            } catch(NumberFormatException ex) {
+                throw new IllegalArgumentException("Le paramètre: '" + nextValue + "' "
+                        + "doit soit être 'opti', soit un nombre "
+                        + "(" + ex.getMessage() + ")");
+            }
+            result = new NbrPions(value);
+        }
+        
+        return result;
+    }
     
     private void printHelp() {
         System.out.println("------------ INFO-F-302 ------------");
-        System.out.println("\t-h, -help\tPour afficher ce texte");
-        System.out.println("\t-d/-i\t\tChoix entre le problème de domination (-d) ou d'indépendance (-i)");
-        System.out.println("\t-n\t\tTaille de l'échiquier");
-        System.out.println("\t-t, -tour\tNombre de tour");
-        System.out.println("\t-f, -fou\tNombre de fou");
-        System.out.println("\t-c, -cavalier\tNombre de cavalier");
-        System.out.println("\t-utf8\t\tAffiche les pions via des caractères UTF-8");
+        System.out.println("Utilisation: java -jar <fichier> [options]");
+        System.out.println("\t-h,-help\t\tPour afficher ce texte");
+        System.out.println("\t-d/-i\t\t\tChoix entre le problème de domination (-d) ou d'indépendance (-i)");
+        System.out.println("\t-n\t\t\tTaille de l'échiquier");
+        System.out.println("\t-t,-tour <nbr/opti>\tNombre de tour");
+        System.out.println("\t-f,-fou <nbr/opti>\tNombre de fou");
+        System.out.println("\t-c,-cavalier <nbr/opti>\tNombre de cavalier");
+        System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
+        System.out.println("");
+        System.out.println("Information:");
+        System.out.println("\t<nbr/opti>");
+        System.out.println("\t\t'nbr'  Vous permet de choisir soit un nombre précis");
+        System.out.println("\t\t'opti' Vous permet d'optimiser ce nombre");
         System.out.println("");
     }
 
     /**
-     * @return the _probDomination
+     * @return the probDomination
      */
     public boolean isProbDomination() {
         return _probDomination;
     }
 
     /**
-     * @return the _tailleEchec
+     * @return the tailleEchec
      */
     public int getTailleEchec() {
         return _tailleEchec;
     }
 
     /**
-     * @return the _nbrTour
+     * @return the nbrTour
      */
-    public int getNbrTour() {
+    public NbrPions getNbrTour() {
         return _nbrTour;
     }
 
     /**
-     * @return the _nbrCavalier
+     * @return the nbrCavalier
      */
-    public int getNbrCavalier() {
+    public NbrPions getNbrCavalier() {
         return _nbrCavalier;
     }
 
     /**
-     * @return the _nbrFou
+     * @return the nbrFou
      */
-    public int getNbrFou() {
+    public NbrPions getNbrFou() {
         return _nbrFou;
     }
 
     /**
-     * @return the _utf8
+     * @return the utf8
      */
     public boolean isUtf8() {
         return _utf8;
     }
 
     /**
-     * @return the _probIndependance
+     * @return the probIndependance
      */
     public boolean isProbIndependance() {
         return _probIndependance;
