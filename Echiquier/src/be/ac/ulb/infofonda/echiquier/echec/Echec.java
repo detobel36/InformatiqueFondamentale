@@ -1,6 +1,7 @@
 package be.ac.ulb.infofonda.echiquier.echec;
 
 import be.ac.ulb.infofonda.echiquier.echec.pionmanager.PionManager;
+import java.util.ArrayList;
 import java.util.List;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
@@ -57,7 +58,16 @@ public class Echec {
         
         final IntVar optimiseVar = PionManager.getOptimiseVar(_model, _tailleEchec, _variables);
         if(optimiseVar != null) {
-            final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
+            
+            List<Solution> allSolution;
+            if(allResult) {
+               allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
+            } else {
+                final Solution solutionOptimal = solver.findOptimalSolution(optimiseVar, Model.MINIMIZE);
+                allSolution = new ArrayList<>();
+                allSolution.add(solutionOptimal);
+            }
+            
             for(final Solution solution : allSolution) {
                 System.out.println("Solution: " + (++i));
                 viewResult(solution);
