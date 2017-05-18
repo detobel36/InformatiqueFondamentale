@@ -19,9 +19,11 @@ public class Main {
                 
                 final ArrayList<String> allContent = readingFile.getAllContent();
                 final boolean viewAll = readingArgs.isViewAll();
+                final boolean isTime = readingArgs.isTime();
+                final boolean utf8 = readingArgs.isUtf8();
                 final boolean debug = readingArgs.isDebug();
                 
-                new Surveillance(allContent, viewAll, debug);
+                new Surveillance(allContent, viewAll, isTime, utf8, debug);
                 
             } else {
                 System.err.println("Le fichier indiqué n'est pas valide !");
@@ -30,31 +32,6 @@ public class Main {
         } catch(IllegalArgumentException ex) {
             System.out.println("Erreur: " + ex.getMessage());
         }
-        
-        // TODO: ONLY FOR TEST
-//        final ArrayList<Integer[]> listeObstacle = new ArrayList<>();
-//        final int tailleLigne = 6;
-//        final int tailleCol = 6;
-//        
-//        for(int ligne = 0; ligne < tailleLigne; ++ligne) {
-//            listeObstacle.add(getCoord(ligne, 0));
-//            listeObstacle.add(getCoord(ligne, tailleCol-1));
-//        }
-//        
-//        for(int col = 1; col < tailleCol-1; ++col) {
-//            listeObstacle.add(getCoord(0, col));
-//            listeObstacle.add(getCoord(tailleLigne-1, col));
-//        }
-//        
-//        new Surveillance(6, 6, listeObstacle, true, true);
-        
-    }
-    
-    private static Integer[] getCoord(final int ligne, final int col) {
-        final Integer[] tempRes = new Integer[2];
-        tempRes[0] = ligne;
-        tempRes[1] = col;
-        return tempRes;
     }
     
 }

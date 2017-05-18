@@ -13,7 +13,7 @@ public class Capteur extends CaseManager {
     private final Direction _direction;
     
     public Capteur(final Direction direction, final int maxLigne, final int maxCol) {
-        super(direction.getSymbole(), maxLigne, maxCol, true);
+        super(direction.getSymbole(), direction.getUtf8Symbole(), maxLigne, maxCol, true);
         _direction = direction;
     }
 

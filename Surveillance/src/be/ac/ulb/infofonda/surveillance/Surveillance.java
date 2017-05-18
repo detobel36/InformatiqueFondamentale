@@ -22,8 +22,22 @@ public class Surveillance {
     private int _ligne;
     private IntVar[][] _variables;
     
+    /**
+     * Permet de lancer le programme de surveillance
+     * 
+     * @param plan le plan où se trouve chaque élément
+     * @param allResult True s'il faut afficher <b>tous</b> les résultats
+     * @param isTime True s'il faut afficher le temps d'exécution du programme
+     * @param utf8 True si l'affichage peut être fait en UTF8
+     * @param debug True s'il faut afficher les messages de débug
+     * 
+     * @throws IllegalArgumentException exception en cas de refus des arguments
+     */
     public Surveillance(final ArrayList<String> plan, final boolean allResult,
-            final boolean debug) throws IllegalArgumentException {
+            final boolean isTime, final boolean utf8, final boolean debug) 
+            throws IllegalArgumentException {
+        
+        long startTime = System.currentTimeMillis();
         
         final ArrayList<Integer[]> listeObstacle;
         try {
@@ -39,7 +53,11 @@ public class Surveillance {
         createVariables();
         CaseManager.applyObstracleConstraints(_model, _variables, listeObstacle);
         CaseManager.applyAllConstraints(_model, _variables, listeObstacle, debug);
-        solveProblem(allResult);
+        solveProblem(allResult, utf8);
+        
+        if(isTime) {
+            viewTotalTime(startTime);
+        }
     }
     
     /**
@@ -90,7 +108,7 @@ public class Surveillance {
     /**
      * Resolv problem
      */
-    private void solveProblem(final boolean allResult) {
+    private void solveProblem(final boolean allResult, final boolean utf8) {
         final Solver solver = _model.getSolver();
         int i = 0;
         
@@ -108,7 +126,7 @@ public class Surveillance {
              
             for(final Solution solution : allSolution) {
                 System.out.println("Solution: " + (++i));
-                viewResult(solution);
+                viewResult(solution, utf8);
                 if(!allResult) {
                     break;
                 }
@@ -120,7 +138,7 @@ public class Surveillance {
         }
     }
     
-    private void viewResult(final Solution solution) {
+    private void viewResult(final Solution solution, final boolean utf8) {
         for(int ligne = 0; ligne < _ligne; ++ligne) {
             String strLigne = "";
             
@@ -131,11 +149,32 @@ public class Surveillance {
                 } else {
                     value = _variables[ligne][col].getValue(); 
                 }
-                strLigne += CaseManager.caseIndex2String(value);
+                strLigne += CaseManager.caseIndex2String(value, utf8);
             }
             System.out.println(strLigne);
         }
         System.out.println("");
+    }
+    
+    /**
+     * Permet de calculer et d'afficher la différence de temps entre l'heure
+     * actuelle et l'heure passé en paramètre
+     * 
+     * @param startTime le temps de début que l'on veut compter
+     */
+    private void viewTotalTime(final Long startTime) {
+        final Long difference = System.currentTimeMillis() - startTime;
+        final long temps = difference/1000;
+        
+        final int sec = (int) (temps%60);
+        final int min = (int) (temps/60)%60;
+        String strTime = "";
+        if(min > 0) {
+            strTime += min + " min. ";
+        }
+        strTime += sec + " sec.";
+        
+        System.out.println("Le programme à mis: " + strTime + " pour s'exécuter (" + difference + " ms)");
     }
     
 }

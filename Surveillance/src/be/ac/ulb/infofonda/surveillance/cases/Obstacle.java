@@ -12,7 +12,7 @@ public class Obstacle extends CaseManager {
     private static Obstacle _instance = null;
     
     public Obstacle() {
-        super('*', 0, 0, false);
+        super('*', '█', 0, 0, false);
     }
     
     @Override

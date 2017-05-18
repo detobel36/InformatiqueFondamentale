@@ -8,10 +8,12 @@ package be.ac.ulb.infofonda.surveillance.input;
 public class ReadingArguments {
     
     private int _index = 0;
-    private boolean _viewAll;
-    private boolean _utf8;
-    private boolean _debug;
+    private boolean _viewAll = false;
+    private boolean _utf8 = false;
+    private boolean _debug = false;
     private String _fichier;
+    private boolean _time = false;
+    private boolean _fullTime = false;
     
     
     public ReadingArguments(final String[] args) throws IllegalArgumentException {
@@ -53,6 +55,17 @@ public class ReadingArguments {
                     _utf8 = true;
                     break;
                 
+                /////// TIME ///////
+                    
+                case "-fulltime":
+                case "-fullt":
+                    _fullTime = true;
+                    
+                case "-time":
+                case "-t":
+                    _time = true;
+                    break;
+                    
                     
                 /////// DEBUG ///////
                     
@@ -90,6 +103,7 @@ public class ReadingArguments {
         System.out.println("Utilisation: java -jar <fichier> [options]");
         System.out.println("\t-h,-help\t\tPour afficher ce texte");
         System.out.println("\t-file,-f\t\t\tSélectionner le fichier qui contient le plan");
+        System.out.println("\t-time,-t\t\t\tPermet d'afficher le temps d'exécution total du programme");
         System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
         System.out.println("\t-all\t\t\tAffiche tous les résultats possibles");
         System.out.println("\t-debug\t\t\tAffiche les messages de débug");
@@ -122,6 +136,20 @@ public class ReadingArguments {
      */
     public String getFichier() {
         return _fichier;
+    }
+
+    /**
+     * @return the time
+     */
+    public boolean isTime() {
+        return _time;
+    }
+
+    /**
+     * @return the fullTime
+     */
+    public boolean isFullTime() {
+        return _fullTime;
     }
     
     

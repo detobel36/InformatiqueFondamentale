@@ -14,17 +14,20 @@ import org.chocosolver.solver.variables.IntVar;
 public abstract class CaseManager {
     
     private static final ArrayList<CaseManager> allCases = new ArrayList<>();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     protected final char _symbole;
+    protected final char _utf8Symbole;
     protected final int _index;
     protected final int _maxLigne;
     protected final int _maxColonne;
     protected final boolean _mustBeOptimised;
     
-    protected CaseManager(final char symbole, final int maxLigne, final int maxCol,
-            final boolean mustBeOptimise) {
+    protected CaseManager(final char symbole, final char utf8Symbole, 
+            final int maxLigne, final int maxCol, final boolean mustBeOptimise) {
+        
         _symbole = symbole;
+        _utf8Symbole = utf8Symbole;
         _index = allCases.size();
         _maxLigne = maxLigne;
         _maxColonne = maxCol;
@@ -39,8 +42,8 @@ public abstract class CaseManager {
         return _symbole;
     }
     
-    public String getSymbole() {
-        return ""+_symbole;
+    public String getSymbole(final boolean utf8) {
+        return "" + (utf8 ? _utf8Symbole : _symbole);
     }
     
     protected int getIndex() {
@@ -129,9 +132,9 @@ public abstract class CaseManager {
         return allCases.size();
     }
     
-    public static String caseIndex2String(final int index) {
+    public static String caseIndex2String(final int index, final boolean utf8) {
         final CaseManager caseManager = allCases.get(index);
-        return (caseManager != null) ? caseManager.getSymbole() : " ";
+        return (caseManager != null) ? caseManager.getSymbole(utf8) : " ";
     }
     
     public static void applyAllConstraints(final Model model, final IntVar[][] variables,
@@ -157,7 +160,7 @@ public abstract class CaseManager {
                         allContrainte.add(caseContrainte);
                     } else if(DEBUG || debug) {
                         System.err.println("Aucune contrainte pour la case '" + 
-                                specificCase.getSymbole() + "' en coordonnée: "
+                                specificCase.getSymbole(false) + "' en coordonnée: "
                                 + "(" + ligne + ", " + col + ")");
                     }
                 }

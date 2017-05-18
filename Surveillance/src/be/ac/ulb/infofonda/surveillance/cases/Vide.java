@@ -12,7 +12,7 @@ public class Vide extends CaseManager {
     private static Vide _instance = null;
     
     private Vide() {
-        super(' ', 0, 0, false);
+        super(' ', ' ', 0, 0, false);
     }
     
     @Override
