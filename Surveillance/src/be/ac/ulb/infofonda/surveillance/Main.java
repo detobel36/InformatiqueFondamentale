@@ -16,9 +16,12 @@ public class Main {
 
             if(fichier != null && !fichier.isEmpty()) {
                 final ReadingFile readingFile = new ReadingFile(fichier);
-                for(final String ligne : readingFile.getAllContent()) {
-                    System.out.println("Oui, ligne: " + ligne);
-                }
+                
+                final ArrayList<String> allContent = readingFile.getAllContent();
+                final boolean viewAll = readingArgs.isViewAll();
+                final boolean debug = readingArgs.isDebug();
+                
+                new Surveillance(allContent, viewAll, debug);
                 
             } else {
                 System.err.println("Le fichier indiqué n'est pas valide !");
@@ -29,21 +32,21 @@ public class Main {
         }
         
         // TODO: ONLY FOR TEST
-        final ArrayList<Integer[]> listeObstacle = new ArrayList<>();
-        final int tailleLigne = 6;
-        final int tailleCol = 6;
-        
-        for(int ligne = 0; ligne < tailleLigne; ++ligne) {
-            listeObstacle.add(getCoord(ligne, 0));
-            listeObstacle.add(getCoord(ligne, tailleCol-1));
-        }
-        
-        for(int col = 1; col < tailleCol-1; ++col) {
-            listeObstacle.add(getCoord(0, col));
-            listeObstacle.add(getCoord(tailleLigne-1, col));
-        }
-        
-        new Surveillance(6, 6, listeObstacle, true, true);
+//        final ArrayList<Integer[]> listeObstacle = new ArrayList<>();
+//        final int tailleLigne = 6;
+//        final int tailleCol = 6;
+//        
+//        for(int ligne = 0; ligne < tailleLigne; ++ligne) {
+//            listeObstacle.add(getCoord(ligne, 0));
+//            listeObstacle.add(getCoord(ligne, tailleCol-1));
+//        }
+//        
+//        for(int col = 1; col < tailleCol-1; ++col) {
+//            listeObstacle.add(getCoord(0, col));
+//            listeObstacle.add(getCoord(tailleLigne-1, col));
+//        }
+//        
+//        new Surveillance(6, 6, listeObstacle, true, true);
         
     }
     

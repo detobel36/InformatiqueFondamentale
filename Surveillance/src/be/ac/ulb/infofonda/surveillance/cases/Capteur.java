@@ -42,13 +42,13 @@ public class Capteur extends CaseManager {
             case EST:
                 tailleMaximum = _maxColonne;
                 isForLigne = false;
-                operation = 1;
+                operation = -1;
                 break;
                 
             case OUEST:
                 tailleMaximum = _maxColonne;
                 isForLigne = false;
-                operation = -1;
+                operation = 1;
                 break;
                 
             default:

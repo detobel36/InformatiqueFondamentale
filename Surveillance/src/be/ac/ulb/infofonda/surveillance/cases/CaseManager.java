@@ -14,7 +14,7 @@ import org.chocosolver.solver.variables.IntVar;
 public abstract class CaseManager {
     
     private static final ArrayList<CaseManager> allCases = new ArrayList<>();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     protected final char _symbole;
     protected final int _index;
@@ -33,6 +33,10 @@ public abstract class CaseManager {
         printDebug("Manager: " + symbole + " (index: " + _index + ")");
         
         allCases.add(this);
+    }
+    
+    public char getCharSymbole() {
+        return _symbole;
     }
     
     public String getSymbole() {
@@ -113,7 +117,7 @@ public abstract class CaseManager {
         return allVar.toArray(new IntVar[]{});
     }
     
-    protected static Integer[] getCoord(final int ligne, final int col) {
+    public static Integer[] getCoord(final int ligne, final int col) {
         final Integer[] tempRes = new Integer[2];
         tempRes[0] = ligne;
         tempRes[1] = col;
@@ -131,7 +135,7 @@ public abstract class CaseManager {
     }
     
     public static void applyAllConstraints(final Model model, final IntVar[][] variables,
-            final boolean debug) {
+            final ArrayList<Integer[]> listeObstacle, final boolean debug) {
         
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
@@ -140,6 +144,10 @@ public abstract class CaseManager {
                 final ArrayList<Constraint> allContrainte = new ArrayList<>();
                 
                 for(final CaseManager specificCase : allCases) {
+                    if(coordInListObstacle(getCoord(ligne, col), listeObstacle)) {
+                        break;
+                    }
+                    
                     // Get all constraintes for a specific position to a specific
                     // case.
                     final Constraint caseContrainte = specificCase.getConstraints(model, 

@@ -1,6 +1,7 @@
 package be.ac.ulb.infofonda.surveillance;
 
 import be.ac.ulb.infofonda.surveillance.cases.CaseManager;
+import be.ac.ulb.infofonda.surveillance.cases.Obstacle;
 import java.util.ArrayList;
 import java.util.List;
 import org.chocosolver.solver.Model;
@@ -17,25 +18,67 @@ import org.chocosolver.solver.variables.IntVar;
 public class Surveillance {
     
     private final Model _model;
-    private final int _colonne;
-    private final int _ligne;
+    private int _colonne;
+    private int _ligne;
     private IntVar[][] _variables;
     
-    
-    
-    public Surveillance(final int horizontal, final int vertical, 
-            final ArrayList<Integer[]> listeObstacle, final boolean allResult,
-            final boolean debug) {
-        _model = new Model("Surveillance");
+    public Surveillance(final ArrayList<String> plan, final boolean allResult,
+            final boolean debug) throws IllegalArgumentException {
         
-        _ligne = vertical;
-        _colonne = horizontal;
+        final ArrayList<Integer[]> listeObstacle;
+        try {
+            listeObstacle = readPlan(plan);
+        } catch(ExceptionInInitializerError ex) {
+            throw new IllegalArgumentException("Impossible de charger le plan "
+                    + "(" + ex.getMessage() + ")");
+        }
+        
+        _model = new Model("Surveillance");
         
         CaseManager.initAllManager(_ligne, _colonne);
         createVariables();
         CaseManager.applyObstracleConstraints(_model, _variables, listeObstacle);
-        CaseManager.applyAllConstraints(_model, _variables, debug);
+        CaseManager.applyAllConstraints(_model, _variables, listeObstacle, debug);
         solveProblem(allResult);
+    }
+    
+    /**
+     * Permet de lire un plan contenu sous forme d'ArrayList.  Cette méthode définit
+     * les attributs ligne, colonne et retourne la liste des obstacles
+     * 
+     * @param plan un ArrayList où un élément correspond à une ligne du plan
+     * @return ArrayList d'Integer[] contenant les coordonnées des obstacles
+     */
+    private ArrayList<Integer[]> readPlan(final ArrayList<String> plan) 
+            throws ExceptionInInitializerError {
+        
+        final ArrayList<Integer[]> result = new ArrayList<>();
+        
+        _colonne = -1;
+        _ligne = plan.size();
+        
+        int currentLigne = 0;
+        for(final String ligne : plan) {
+            final char[] charOfLigne = ligne.toCharArray();
+            
+            if(_colonne == -1) {
+                _colonne = charOfLigne.length;
+            } else if(_colonne != charOfLigne.length) {
+                throw new ExceptionInInitializerError("Le nombre de colonne n'est"
+                        + " pas uniforme sur ce plan");
+            }
+            
+            int currentCol = 0;
+            for(final char elem : charOfLigne) {
+                if(elem == Obstacle.getInstance().getCharSymbole()) {
+                    result.add(CaseManager.getCoord(currentLigne, currentCol));
+                }
+                ++currentCol;
+            }
+            ++currentLigne;
+        }
+        
+        return result;
     }
     
     private void createVariables() {
@@ -53,7 +96,16 @@ public class Surveillance {
         
         final IntVar optimiseVar = CaseManager.getOptimiseVar(_model, _ligne, _colonne, _variables);
         if(optimiseVar != null) {
-            final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
+            
+            List<Solution> allSolution;
+            if(allResult) {
+               allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);
+            } else {
+                final Solution solutionOptimal = solver.findOptimalSolution(optimiseVar, Model.MINIMIZE);
+                allSolution = new ArrayList<>();
+                allSolution.add(solutionOptimal);
+            }
+             
             for(final Solution solution : allSolution) {
                 System.out.println("Solution: " + (++i));
                 viewResult(solution);
