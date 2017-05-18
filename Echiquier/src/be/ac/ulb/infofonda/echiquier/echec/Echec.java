@@ -1,7 +1,6 @@
 package be.ac.ulb.infofonda.echiquier.echec;
 
 import be.ac.ulb.infofonda.echiquier.echec.pionmanager.PionManager;
-import java.util.ArrayList;
 import java.util.List;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
@@ -45,16 +44,9 @@ public class Echec {
      * 
      * @param allResult True if we will all the results
      */
-    private void solveProblem(boolean allResult) {
+    private void solveProblem(final boolean allResult) {
         final Solver solver = _model.getSolver();
         int i = 0;
-        
-        final ArrayList<IntVar> allVar = new ArrayList<>();
-        for(final IntVar[] ligneVar : _variables) {
-            for(final IntVar var : ligneVar) {
-                allVar.add(var);
-            }
-        }
         
         final IntVar optimiseVar = PionManager.getOptimiseVar(_model, _tailleEchec, _variables);
         if(optimiseVar != null) {
