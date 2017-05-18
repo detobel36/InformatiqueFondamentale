@@ -37,7 +37,7 @@ public class Surveillance {
             final boolean isTime, final boolean utf8, final boolean debug) 
             throws IllegalArgumentException {
         
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         
         final ArrayList<Integer[]> listeObstacle;
         try {
