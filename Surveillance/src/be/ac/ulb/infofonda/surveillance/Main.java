@@ -17,6 +17,7 @@ public class Main {
         }
         
         for(int col = 1; col < tailleCol-1; ++col) {
+            listeObstacle.add(getCoord(0, col));
             listeObstacle.add(getCoord(tailleLigne-1, col));
         }
         

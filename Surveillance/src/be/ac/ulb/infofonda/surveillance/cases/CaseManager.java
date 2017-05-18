@@ -117,7 +117,7 @@ public abstract class CaseManager {
     
     // PUBLIC 
     public static int getNbrCaseDomaine() {
-        return allCases.size()-1; // On retire le type "obstacle"
+        return allCases.size();
     }
     
     public static String caseIndex2String(final int index) {
@@ -165,12 +165,28 @@ public abstract class CaseManager {
             final IntVar[][] variables, final ArrayList<Integer[]> listeObstacle) {
         
         final int indexObstacle = Obstacle.getInstance().getIndex();
-        for(final Integer[] position : listeObstacle) {
-            final int ligne = position[0];
-            final int col = position[1];
-            
-            model.arithm(variables[ligne][col], "=", indexObstacle).post();
+        
+        for(int ligne = 0; ligne < variables.length; ++ligne) {
+            for(int col = 0; col < variables[ligne].length; ++col) {
+                String operation = "!=";
+                if(coordInListObstacle(getCoord(ligne, col), listeObstacle)) {
+                    operation = "=";
+                }
+                
+                model.arithm(variables[ligne][col], operation, indexObstacle).post();
+            }
         }
+    }
+    
+    private static boolean coordInListObstacle(final Integer[] coord, 
+            final ArrayList<Integer[]> listeObstacle) {
+        
+        for(final Integer[] obstacle : listeObstacle) {
+            if(obstacle[0] == coord[0] && obstacle[1] == coord[1]) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public static void initAllManager(final int maxLigne, final int maxCol) {
