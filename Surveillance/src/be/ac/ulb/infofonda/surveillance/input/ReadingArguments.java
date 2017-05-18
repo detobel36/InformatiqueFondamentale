@@ -11,9 +11,10 @@ public class ReadingArguments {
     private boolean _viewAll = false;
     private boolean _utf8 = false;
     private boolean _debug = false;
-    private String _fichier;
+    private String _fichier = "";
     private boolean _time = false;
     private boolean _fullTime = false;
+    private boolean _gui = false;
     
     
     public ReadingArguments(final String[] args) throws IllegalArgumentException {
@@ -38,9 +39,25 @@ public class ReadingArguments {
                 case "-file":
                 case "-f":
                 case "-fichier":
+                    if(_gui) {
+                        throw new IllegalArgumentException("Impossible de spécifier "
+                            + "le fichier ET d'utiliser l'interface graphique");
+                    }
                     _fichier = getNextArgs(args);
                     break;
                     
+                /////// FICHIER GUI ///////
+                
+                case "-gui":
+                case "-g":
+                    if(!_fichier.isEmpty()) {
+                        throw new IllegalArgumentException("Impossible d'ouvrir "
+                            + "l'interface, vous avez déjà spécifié le fichier " 
+                            + _fichier);
+                    }
+                    _gui = true;
+                    break;
+                   
                     
                 /////// All ///////
                     
@@ -103,6 +120,7 @@ public class ReadingArguments {
         System.out.println("Utilisation: java -jar <fichier> [options]");
         System.out.println("\t-h,-help\t\tPour afficher ce texte");
         System.out.println("\t-file,-f\t\tSélectionner le fichier qui contient le plan");
+        System.out.println("\t-gui,-g\t\t\tPermet de sélectionner le fichier de manière graphique");
         System.out.println("\t-time,-t\t\tPermet d'afficher le temps d'exécution total du programme");
         System.out.println("\t-fulltime,-fullt\tPermet d'afficher le temps d'execution régulièrement (20 sec)");
         System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
@@ -151,6 +169,13 @@ public class ReadingArguments {
      */
     public boolean isFullTime() {
         return _fullTime;
+    }
+
+    /**
+     * @return the gui
+     */
+    public boolean isGui() {
+        return _gui;
     }
     
     
