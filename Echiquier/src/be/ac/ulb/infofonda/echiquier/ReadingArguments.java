@@ -11,8 +11,6 @@ public class ReadingArguments {
     
     private int _index;
     
-    private boolean _probDomination = false;
-    private boolean _probIndependance = false;
     private int _tailleEchec = 1;
     private NbrPions _nbrTour = new NbrPions(0);
     private NbrPions _nbrCavalier = new NbrPions(0);
@@ -256,13 +254,6 @@ public class ReadingArguments {
      */
     public boolean isUtf8() {
         return _utf8;
-    }
-
-    /**
-     * @return the probIndependance
-     */
-    public boolean isProbIndependance() {
-        return _probIndependance;
     }
     
     public boolean viewAll() {
