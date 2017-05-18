@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class Capteur extends CaseManager {
     
+    private final boolean DEBUG = false;
     private final Direction _direction;
     
     public Capteur(final Direction direction, final int maxLigne, final int maxCol) {
@@ -29,13 +30,13 @@ public class Capteur extends CaseManager {
             case NORD:
                 tailleMaximum = _maxLigne;
                 isForLigne = true;
-                operation = -1;
+                operation = 1;
                 break;
             
             case SUD:
                 tailleMaximum = _maxLigne;
                 isForLigne = true;
-                operation = 1;
+                operation = -1;
                 break;
                 
             case EST:
@@ -66,13 +67,16 @@ public class Capteur extends CaseManager {
                 newCol += operation * i;
             }
             
-            if(newLigne >= tailleMaximum || newCol >= tailleMaximum) {
-                break;
-                
-            } else if(newLigne >= 0 && newCol >= 0) { 
-                System.out.println("I: " + i + "  (" + newLigne + ", " + newCol + ")");
+            if(newLigne >= 0 && newLigne < _maxLigne && newCol >= 0 &&
+                    newCol < _maxColonne) {
+                if(DEBUG) {
+                    System.out.println("Capteur: [" + _direction.getSymbole() + "] "
+                        + "(" + newLigne + ", " + newCol + ")");
+                }
                 
                 result.add(getCoord(newLigne, newCol));
+            } else {
+                break;
             }
         }
         

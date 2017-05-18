@@ -14,7 +14,7 @@ import org.chocosolver.solver.variables.IntVar;
 public abstract class CaseManager {
     
     private static final ArrayList<CaseManager> allCases = new ArrayList<>();
-    private static boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     protected final char _symbole;
     protected final int _index;
@@ -57,12 +57,17 @@ public abstract class CaseManager {
         
         final int pieceIndex = getIndex();
         Constraint resCase = model.arithm(variables[ligneAcc][colAcc], "=", pieceIndex);
+        String strDebug = "(" + ligneAcc + ", " + colAcc + ") = " + pieceIndex;
         
         for(final Integer[] emptyCoord : getEmptyCase(ligne, col, ligneAcc, colAcc)) {
+            int indexVide = Vide.getInstance().getIndex();
             final Constraint newConstraint = model.arithm(
-            variables[emptyCoord[0]][emptyCoord[1]], "=", Vide.getInstance().getIndex());
+                                variables[emptyCoord[0]][emptyCoord[1]], "=", indexVide);
+            strDebug += " AND (" + emptyCoord[0] + ", " + emptyCoord[1] + ") = " + 
+                        indexVide;
             resCase = model.and(resCase, newConstraint);
         }
+        printDebug("\t" + strDebug);
         
         return resCase;
     }
@@ -125,21 +130,16 @@ public abstract class CaseManager {
         return (caseManager != null) ? caseManager.getSymbole() : " ";
     }
     
-    public static void applyAllConstraints(final Model model, final IntVar[][] variables) {
+    public static void applyAllConstraints(final Model model, final IntVar[][] variables,
+            final boolean debug) {
         
         for(int ligne = 0; ligne < variables.length; ++ligne) {
             for(int col = 0; col < variables[ligne].length; ++col) {
                 printDebug("Contrainte pour (" + ligne + ", " + col + ")");
                 
                 final ArrayList<Constraint> allContrainte = new ArrayList<>();
-                // La case est bonne s'il est différente du vide
-//                allContrainte.add(model.arithm(variables[ligne][col], "!=", Vide.getInstance().getIndex()));
                 
                 for(final CaseManager specificCase : allCases) {
-                    if(specificCase.equals(Obstacle.getInstance())) {
-                        continue;
-                    }
-                    
                     // Get all constraintes for a specific position to a specific
                     // case.
                     final Constraint caseContrainte = specificCase.getConstraints(model, 
@@ -147,7 +147,7 @@ public abstract class CaseManager {
                     
                     if(caseContrainte != null) {
                         allContrainte.add(caseContrainte);
-                    } else {
+                    } else if(DEBUG || debug) {
                         System.err.println("Aucune contrainte pour la case '" + 
                                 specificCase.getSymbole() + "' en coordonnée: "
                                 + "(" + ligne + ", " + col + ")");
@@ -173,6 +173,7 @@ public abstract class CaseManager {
                     operation = "=";
                 }
                 
+                printDebug("Obstacle: (" + ligne + ", " + col + ") " + operation + " " + indexObstacle);
                 model.arithm(variables[ligne][col], operation, indexObstacle).post();
             }
         }
@@ -221,7 +222,7 @@ public abstract class CaseManager {
             
             result = model.intVar("Optimisation", 0, ligne * col);
             final IntVar[] allVar = convertDim2ToDim1(variables);
-
+            
             model.among(result, allVar, allIndex).post();
         }
         

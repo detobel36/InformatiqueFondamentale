@@ -17,14 +17,15 @@ public class Obstacle extends CaseManager {
     
     @Override
     protected ArrayList<Integer[]> getAccessibleCase(int ligne, int col) {
-        return new ArrayList<>();
+        final ArrayList<Integer[]> result = new ArrayList<>();
+        result.add(getCoord(ligne, col));
+        return result;
     }
     
     @Override
     protected ArrayList<Integer[]> getEmptyCase(final int ligne, final int col, 
             final int ligneAcc, final int colAcc) {
-        throw new UnsupportedOperationException("Vous ne pouvez pas appeller cette méthode "
-                + "sur cet objet");
+        return new ArrayList<>();
     }
     
     ///////////////////// STATIC /////////////////////

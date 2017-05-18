@@ -22,7 +22,7 @@ public class Surveillance {
     private IntVar[][] _variables;
     
     public Surveillance(final int horizontal, final int vertical, 
-            final ArrayList<Integer[]> listeObstacle) {
+            final ArrayList<Integer[]> listeObstacle, final boolean debug) {
         _model = new Model("Surveillance");
         
         _ligne = vertical;
@@ -31,7 +31,7 @@ public class Surveillance {
         CaseManager.initAllManager(_ligne, _colonne);
         createVariables();
         CaseManager.applyObstracleConstraints(_model, _variables, listeObstacle);
-        CaseManager.applyAllConstraints(_model, _variables);
+        CaseManager.applyAllConstraints(_model, _variables, debug);
         solveProblem();
     }
     
@@ -48,13 +48,13 @@ public class Surveillance {
         final Solver solver = _model.getSolver();
         int i = 0;
         
-        final ArrayList<IntVar> allVar = new ArrayList<>();
-        for(final IntVar[] ligneVar : _variables) {
-            for(final IntVar var : ligneVar) {
-                allVar.add(var);
-            }
-        }
-        
+//        final ArrayList<IntVar> allVar = new ArrayList<>();
+//        for(final IntVar[] ligneVar : _variables) {
+//            for(final IntVar var : ligneVar) {
+//                allVar.add(var);
+//            }
+//        }
+
         final IntVar optimiseVar = CaseManager.getOptimiseVar(_model, _ligne, _colonne, _variables);
         if(optimiseVar != null) {
             final List<Solution> allSolution = solver.findAllOptimalSolutions(optimiseVar, Model.MINIMIZE);

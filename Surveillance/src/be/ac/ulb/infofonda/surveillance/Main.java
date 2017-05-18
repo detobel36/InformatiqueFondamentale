@@ -21,7 +21,7 @@ public class Main {
             listeObstacle.add(getCoord(tailleLigne-1, col));
         }
         
-        new Surveillance(6, 6, listeObstacle);
+        new Surveillance(6, 6, listeObstacle, true);
         
     }
     
