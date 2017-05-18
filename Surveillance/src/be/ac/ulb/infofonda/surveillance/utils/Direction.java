@@ -1,4 +1,4 @@
-package be.ac.ulb.infofonda.surveillance;
+package be.ac.ulb.infofonda.surveillance.utils;
 
 /**
  * Représente les différentes directions possibles

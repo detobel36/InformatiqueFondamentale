@@ -1,6 +1,6 @@
 package be.ac.ulb.infofonda.surveillance.cases;
 
-import be.ac.ulb.infofonda.surveillance.Direction;
+import be.ac.ulb.infofonda.surveillance.utils.Direction;
 import java.util.ArrayList;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
@@ -60,7 +60,7 @@ public abstract class CaseManager {
         String strDebug = "(" + ligneAcc + ", " + colAcc + ") = " + pieceIndex;
         
         for(final Integer[] emptyCoord : getEmptyCase(ligne, col, ligneAcc, colAcc)) {
-            int indexVide = Vide.getInstance().getIndex();
+            final int indexVide = Vide.getInstance().getIndex();
             final Constraint newConstraint = model.arithm(
                                 variables[emptyCoord[0]][emptyCoord[1]], "=", indexVide);
             strDebug += " AND (" + emptyCoord[0] + ", " + emptyCoord[1] + ") = " + 
@@ -201,7 +201,7 @@ public abstract class CaseManager {
     }
     
     public static IntVar getOptimiseVar(final Model model, final int ligne, 
-            final int col, IntVar[][] variables) {
+            final int col, final IntVar[][] variables) {
         
         final ArrayList<Integer> optimiseIndex = new ArrayList<>();
         for(final CaseManager specificCase : allCases) {

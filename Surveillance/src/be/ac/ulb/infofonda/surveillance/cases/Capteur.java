@@ -1,6 +1,6 @@
 package be.ac.ulb.infofonda.surveillance.cases;
 
-import be.ac.ulb.infofonda.surveillance.Direction;
+import be.ac.ulb.infofonda.surveillance.utils.Direction;
 import java.util.ArrayList;
 
 /**

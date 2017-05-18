@@ -16,12 +16,13 @@ public class Vide extends CaseManager {
     }
     
     @Override
-    protected ArrayList<Integer[]> getAccessibleCase(int ligne, int col) {
+    protected ArrayList<Integer[]> getAccessibleCase(final int ligne, final int col) {
         return new ArrayList<>();
     }
 
     @Override
-    protected ArrayList<Integer[]> getEmptyCase(int ligne, int col, int ligneAcc, int colAcc) {
+    protected ArrayList<Integer[]> getEmptyCase(final int ligne, final int col, 
+            final int ligneAcc, final int colAcc) {
         return new ArrayList<>();
     }
     

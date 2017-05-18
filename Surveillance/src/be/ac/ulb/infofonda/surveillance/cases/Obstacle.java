@@ -16,7 +16,7 @@ public class Obstacle extends CaseManager {
     }
     
     @Override
-    protected ArrayList<Integer[]> getAccessibleCase(int ligne, int col) {
+    protected ArrayList<Integer[]> getAccessibleCase(final int ligne, final int col) {
         final ArrayList<Integer[]> result = new ArrayList<>();
         result.add(getCoord(ligne, col));
         return result;
