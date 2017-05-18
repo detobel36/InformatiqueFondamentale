@@ -27,11 +27,12 @@ public class Main {
             final boolean utf8 = readingArgs.isUtf8();
             final boolean viewAll = readingArgs.viewAll();
             final boolean isDebug = readingArgs.isDebug();
+            final boolean isTime = readingArgs.isTime();
             final TypeProbleme typeProbleme = readingArgs.getTypeProbleme();
             
             if(typeProbleme != null) {
                 new Echec(nbrFou, nbrCavalier, nbrTour, tailleEchec, 
-                        typeProbleme, viewAll, utf8, isDebug);
+                        typeProbleme, viewAll, isTime, utf8, isDebug);
             } else {
                 System.out.println("Aucun problème n'a été sélectionné");
             }

@@ -23,7 +23,10 @@ public class Echec {
     
     public Echec(final NbrPions nbrFou, final NbrPions nbrCavalier, final NbrPions nbrTour, 
             final int tailleEchec, final TypeProbleme typeProbleme, 
-            final boolean allResults, final boolean utf8, final boolean debug) {
+            final boolean allResults, final boolean isTime, final boolean utf8, 
+            final boolean debug) {
+        
+        final long startTime = System.currentTimeMillis();
         _model = new Model("Echec");
         
         _tailleEchec = tailleEchec;
@@ -34,6 +37,10 @@ public class Echec {
         createVariables();
         initConstraints(typeProbleme);
         solveProblem(allResults);
+        
+        if(isTime) {
+            viewTotalTime(startTime);
+        }
     }
     
     
@@ -156,6 +163,27 @@ public class Echec {
             result = " │ ";
         }
         return result;
+    }
+    
+    /**
+     * Permet de calculer et d'afficher la différence de temps entre l'heure
+     * actuelle et l'heure passé en paramètre
+     * 
+     * @param startTime le temps de début que l'on veut compter
+     */
+    private void viewTotalTime(final Long startTime) {
+        final Long difference = System.currentTimeMillis() - startTime;
+        final long temps = difference/1000;
+        
+        final int sec = (int) (temps%60);
+        final int min = (int) (temps/60)%60;
+        String strTime = "";
+        if(min > 0) {
+            strTime += min + " min. ";
+        }
+        strTime += sec + " sec.";
+        
+        System.out.println("Le programme à mis: " + strTime + " pour s'exécuter (" + difference + " ms)");
     }
     
 }

@@ -16,6 +16,7 @@ public class ReadingArguments {
     private NbrPions _nbrCavalier = new NbrPions(0);
     private NbrPions _nbrFou = new NbrPions(0);
     private TypeProbleme _typeProbleme = null;
+    private boolean _time = false;
     private boolean _utf8 = false;
     private boolean _viewAll = false;
     private boolean _debug = false;
@@ -124,6 +125,12 @@ public class ReadingArguments {
                     break;
                     
                     
+                /////// TIME ///////
+                    
+                case "-time":
+                    _time = true;
+                    break;
+                    
                 /////// UTF8 ///////
                     
                 case "-utf8":
@@ -203,6 +210,7 @@ public class ReadingArguments {
         System.out.println("\t-t,-tour <nbr/opti>\tNombre de tour");
         System.out.println("\t-f,-fou <nbr/opti>\tNombre de fou");
         System.out.println("\t-c,-cavalier <nbr/opti>\tNombre de cavalier");
+        System.out.println("\t-time,-t\t\t\tPermet d'afficher le temps d'exécution total du programme");
         System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
         System.out.println("\t-all\t\t\tAffiche tous les résultats possibles");
         System.out.println("\t-debug\t\t\tAffiche les messages de débug");
@@ -254,6 +262,13 @@ public class ReadingArguments {
      */
     public boolean isUtf8() {
         return _utf8;
+    }
+    
+    /**
+     * @return the time
+     */
+    public boolean isTime() {
+        return _time;
     }
     
     public boolean viewAll() {
