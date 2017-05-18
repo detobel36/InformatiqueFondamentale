@@ -20,10 +20,11 @@ public class Main {
                 final ArrayList<String> allContent = readingFile.getAllContent();
                 final boolean viewAll = readingArgs.isViewAll();
                 final boolean isTime = readingArgs.isTime();
+                final boolean isFullTime = readingArgs.isFullTime();
                 final boolean utf8 = readingArgs.isUtf8();
                 final boolean debug = readingArgs.isDebug();
                 
-                new Surveillance(allContent, viewAll, isTime, utf8, debug);
+                new Surveillance(allContent, viewAll, isTime, isFullTime, utf8, debug);
                 
             } else {
                 System.err.println("Le fichier indiqué n'est pas valide !");

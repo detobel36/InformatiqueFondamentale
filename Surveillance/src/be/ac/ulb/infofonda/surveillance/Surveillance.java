@@ -2,6 +2,7 @@ package be.ac.ulb.infofonda.surveillance;
 
 import be.ac.ulb.infofonda.surveillance.cases.CaseManager;
 import be.ac.ulb.infofonda.surveillance.cases.Obstacle;
+import be.ac.ulb.infofonda.surveillance.utils.ProgramTimer;
 import java.util.ArrayList;
 import java.util.List;
 import org.chocosolver.solver.Model;
@@ -28,16 +29,22 @@ public class Surveillance {
      * @param plan le plan où se trouve chaque élément
      * @param allResult True s'il faut afficher <b>tous</b> les résultats
      * @param isTime True s'il faut afficher le temps d'exécution du programme
+     * @param isFullTime True si on affiche le temps de manière réculière
      * @param utf8 True si l'affichage peut être fait en UTF8
      * @param debug True s'il faut afficher les messages de débug
      * 
      * @throws IllegalArgumentException exception en cas de refus des arguments
      */
     public Surveillance(final ArrayList<String> plan, final boolean allResult,
-            final boolean isTime, final boolean utf8, final boolean debug) 
-            throws IllegalArgumentException {
+            final boolean isTime, final boolean isFullTime, final boolean utf8, 
+            final boolean debug) throws IllegalArgumentException {
         
         final long startTime = System.currentTimeMillis();
+        ProgramTimer programTimer = null;
+        if(isFullTime) {
+            programTimer = new ProgramTimer();
+            programTimer.start();
+        }
         
         final ArrayList<Integer[]> listeObstacle;
         try {
@@ -54,6 +61,10 @@ public class Surveillance {
         CaseManager.applyObstracleConstraints(_model, _variables, listeObstacle);
         CaseManager.applyAllConstraints(_model, _variables, listeObstacle, debug);
         solveProblem(allResult, utf8);
+        
+        if(programTimer != null) {
+            programTimer.setStop();
+        }
         
         if(isTime) {
             viewTotalTime(startTime);

@@ -102,8 +102,9 @@ public class ReadingArguments {
         System.out.println("------------ INFO-F-302 ------------");
         System.out.println("Utilisation: java -jar <fichier> [options]");
         System.out.println("\t-h,-help\t\tPour afficher ce texte");
-        System.out.println("\t-file,-f\t\t\tSélectionner le fichier qui contient le plan");
-        System.out.println("\t-time,-t\t\t\tPermet d'afficher le temps d'exécution total du programme");
+        System.out.println("\t-file,-f\t\tSélectionner le fichier qui contient le plan");
+        System.out.println("\t-time,-t\t\tPermet d'afficher le temps d'exécution total du programme");
+        System.out.println("\t-fulltime,-fullt\tPermet d'afficher le temps d'execution régulièrement (20 sec)");
         System.out.println("\t-utf8\t\t\tAffiche les pions via des caractères UTF-8");
         System.out.println("\t-all\t\t\tAffiche tous les résultats possibles");
         System.out.println("\t-debug\t\t\tAffiche les messages de débug");
