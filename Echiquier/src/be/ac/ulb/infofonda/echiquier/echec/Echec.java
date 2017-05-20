@@ -89,7 +89,7 @@ public class Echec {
         }
         
         if(i == 0) {
-            System.err.println("Aucune solution n'a été trouvée");
+            System.err.println("pas de solution");
         }
     }
     
