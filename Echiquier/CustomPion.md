@@ -1,7 +1,7 @@
 # Création d'un pion custom
 
 ## Introduction
-Toutes les classes permettant de gérer des pions sont appelées "Manager".  En effet, cette classe va "manager" les pions pour les positions correctement.
+Toutes les classes permettant de gérer des pions sont appelées "Manager".  En effet, cette classe va "manager" les pions pour les positionner correctement.
 
 ## Création de la class
 Pour implémenter son propre pion, il faut créer une class qui devra hérité soit de `PionManager`, soit de `OpaquePionManager`.  La différence entre les deux se situe simplement dans le fait qu'un pion "opaque" ne peut pas traverser les autres pions.  Par exemple une tour est un pion opaque contrairement au cavalier.
