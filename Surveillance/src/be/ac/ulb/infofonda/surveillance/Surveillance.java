@@ -137,6 +137,7 @@ public class Surveillance {
              
             for(final Solution solution : allSolution) {
                 System.out.println("Solution: " + (++i));
+                System.out.println("" + solution.getIntVal(optimiseVar));
                 viewResult(solution, utf8);
                 if(!allResult) {
                     break;

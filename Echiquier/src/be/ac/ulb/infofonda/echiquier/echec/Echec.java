@@ -70,6 +70,7 @@ public class Echec {
             
             for(final Solution solution : allSolution) {
                 System.out.println("Solution: " + (++i));
+                System.out.println("" + solution.getIntVal(optimiseVar));
                 viewResult(solution);
                 if(!allResult) {
                     break;
