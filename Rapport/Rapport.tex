@@ -1,0 +1,524 @@
+% /!\ La strucuture IMRAD a été adoptée.
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{colortbl}
+
+
+\newcommand{\AND}{~\wedge~}
+\newcommand{\OR}{~\vee~}
+\newcommand{\IMPL}{~\rightarrow~}
+\newcommand{\TQ}{~|~}
+
+
+\title{INFO-F-302 Informatique fondamental :\\Projet : problème de satisfaction de contraintes et utilisation de l'outil ChocoSolver}
+\author{Rémy Detobel et Denis Hoornaeret}
+
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+
+% Structure proposée:
+%
+% (- Intro)
+% - Section: Problème d'échecs
+%    - Modélisation (contrainte, domaines, ...)
+%    - Réponse question 1
+%    - Réponse question 2
+% - Section: Surveillance de musée
+%    - Modélisation
+%    - Réponse question
+
+\newpage
+
+\section{Résolution du problème d'échec}
+    
+    \subsection{Définition du CSP}
+        Le problème d'indépendance et de domination ont beaucoup de point communs. On peut donc déjà définir plusieurs choses tel que les variables, les domaines ainsi que quelques contraintes. 
+        
+        \subsubsection{Mouvement des différentes pièces}
+            Pour résoudre différent problèmes liés au jeu d'échec, il faut définir les déplacements que peut faire un pion. Dans les figures ci-dessous, la case grise représente la position d'un pion et les cases vertes représentent les cases où le pion peut se rendre. Lors de la résolution de nos problèmes, il faudra faire attention à une règle importante du jeu d'échec. Cette règle stipule qu'une pièce $a$ se trouvant sur une des cases atteignable par une pièce $b$, va rendre les cases derrière elle non atteignable par la pièce $b$ (dans la figure ci-dessous, les cases sont rouges). La seule execption à la régle est le mouvement du cavalier comme montré dans la figure \ref{fig:Cavalier}.
+          \begin{figure}[h]
+              \begin{minipage}{.3\linewidth}
+                \centering
+                  \begin{tabular}{|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|}
+                    \hline
+                     & &\cellcolor{green!25}& & \\
+                    \hline
+                     & &\cellcolor{green!25}& & \\
+                    \hline
+                    \cellcolor{green!25}&\cellcolor{green!25}&\cellcolor{black!20}&\cellcolor{green!25}&\cellcolor{green!25}\\
+                    \hline
+                     & &\cellcolor{green!25}& & \\
+                    \hline
+                     & &\cellcolor{green!25}& & \\
+                    \hline
+                \end{tabular}
+                \caption{Tour}
+                \label{fig:Tour}
+              \end{minipage}
+              \hfill
+              \begin{minipage}{.3\linewidth}
+                \centering
+                  \begin{tabular}{|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|}
+                    \hline
+                    \cellcolor{green!25}& & & &\cellcolor{green!25}\\
+                    \hline
+                     &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                    \hline
+                     & &\cellcolor{black!20}& & \\
+                    \hline
+                     &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                    \hline
+                    \cellcolor{green!25}& & & &\cellcolor{green!25}\\
+                    \hline
+                \end{tabular}
+                \caption{Fou}
+                \label{fig:Fou}
+              \end{minipage}
+              \hfill
+              \begin{minipage}{.3\linewidth}
+                \centering
+                  \begin{tabular}{|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|}
+                    \hline
+                     &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                    \hline
+                    \cellcolor{green!25}& & & &\cellcolor{green!25}\\
+                    \hline
+                     & &\cellcolor{black!20}& & \\
+                    \hline
+                    \cellcolor{green!25}& & & &\cellcolor{green!25}\\
+                    \hline
+                     &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                    \hline
+                \end{tabular}
+                \caption{Cavalier}
+                \label{fig:Cavalier}
+              \end{minipage}
+          \end{figure}
+      
+        \begin{figure}[!htb]
+            \centering
+            \begin{tabular}{|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|p{0.1cm}|}
+                \hline
+                 & & & & & &\cellcolor{green!25}& \\
+                \hline
+                 & & & & & &\cellcolor{green!25}& \\
+                \hline
+                 & & & & & &\cellcolor{green!25}& \\
+                \hline
+                 &\cellcolor{green!25}& &\cellcolor{green!25}& & &\cellcolor{green!25}& \\
+                \hline
+                \cellcolor{green!25}& & & &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                \hline
+                \cellcolor{red!25}~&\cellcolor{red!25}~&\cellcolor{black!25}F &\cellcolor{green!25}&\cellcolor{green!25}&\cellcolor{green!25}&\cellcolor{black!25}T&\cellcolor{green!25}\\
+                \hline
+                \cellcolor{green!25}& & & &\cellcolor{green!25}& &\cellcolor{green!25}& \\
+                \hline
+                 &\cellcolor{green!25}& &\cellcolor{green!25}& & &\cellcolor{green!25}& \\
+                \hline
+            \end{tabular}
+            \caption{Règle de masquage}
+            \label{fig:masquage}
+        \end{figure}
+        
+        \subsubsection{Ensemble de variables :}
+            Pour ces deux problèmes, on va modéliser l'échiquier comme étant une matrice de variables. L'échiquier étant carré, la matrice le sera également.
+            \label{echec_variable}
+            $$X = \{x_{ij}~\forall~0 \leq i, j < n\}$$
+            Où :
+            \begin{itemize}
+                \item $n$ est la largeur de l'échiquier;
+                \item $x_{ij}$ est une case de cet échiquier.
+            \end{itemize}
+            
+        \subsubsection{Ensemble de domaines :}
+            Ici, toutes les variables ont le même domaine qui correspond à:
+            \label{echec_domaine}
+            $$D = \{D_{x}~|~x \in X\}$$ 
+            $$D_{x} = \{C, T, F, V\}$$
+            Où~:
+            \begin{itemize}
+                \item $C$ est un cavalier;
+                \item $T$ est une tour;
+                \item $F$ est un fou;
+                \item $V$ est une case vide.
+            \end{itemize}
+        
+        \subsubsection{Ensemble des contraintes :}
+            \paragraph{Contrainte de position :}
+                \label{contrainte_position}
+                On définit des contraintes pour chaque cases.  En fonction du problème, la case devra contenir ou non un pion et devra mancer ou non d'autres cases.  Quoi qu'il en soit, on définit pour chaque case les contraintes suivantes:
+                \[C = \{C_{x_{i, j}}~\forall~x_{i, j} \in X\}\]
+                \[C_{x_{i, j}} = \{CavMvt(x_{i, j}) \OR TourMvt(x_{i, j}) \OR FouMvt(x_{i, j}) \OR VideMvt(x_{i, j})\}\]
+                Où $i, j$ sont compris entre $0$ et $n$ et où "$TypeMvt$" correspond à une fonction permettant de faire des vérifications en fonction des mouvements d'une pièce d'un certain type.  Ce seront ces fonctions qui seront définie dans la suite de ce document.
+        
+            \paragraph{Contrainte du nombre de pion}
+                \label{nbr_pion}
+                Le problème de domination et le problème d'indépendance définissent tous les deux un certain nombre de pion $k$ à placer sur le plateau.  Pour vérifier que ce nombre de pion est correcte, on peut définir cette contrainte de la manière suivante:
+                \[\forall k \TQ \sum\limits_{x_{i, j} \in X} x_{i, j} = k \]
+        
+        
+    \subsection{Question 1: Problème d'indépendance}
+        Pour rappel, le problème d'indépendance consiste à trouver une disposition où aucune pièce n'est menacée par une autre. Ce qui revient à dire, que pour toute pièce disposée sur l'échiquier, il n'y a que des cases vides dans l'ensemble des cases atteingnables par la pièce en question.\\
+        Les variables et le domaines ont déjà été définit au point \ref{echec_variable} et \ref{echec_domaine}.  Les contraintes ont également déjà été définie dans le point \ref{contrainte_position}.  Il reste encore à définir les fonctions permettant de définir pour une case donnée le rôle qu'elle devra avoir en fonction de la pièce.
+            
+        \subsubsection{Définition des fonctions de mouvement :}
+            \label{independance_def_mvt}
+            Comme indiqué dans le point précédent on va vérifier que chaque case est vide ou contient un pion qui n'attaque aucune autre case.  Les fonctions suivantes permettent donc de faire cette vérification.
+            
+          \paragraph{Tour~:} La fonction ($TourMvt(x_{i, j})$) ci-dessous vérifie que pour tout mouvement d'une tour sur l'axe verticale et horizontale, aucune case ne soit occupée. L'ensemble des zone atteinte est mis en evidence dans la figure \ref{fig:Tour}.
+            \[\forall~0 \leq k < n \TQ (k \neq i \AND k \neq j \AND x_{i, j} = T \AND x_{k, j} = V \AND x_{i, k} = V)\]
+            
+          \paragraph{Fou~:} Cette fonction ($FouMvt(x_{i, j})$) vérifie, comme la fonction précédente qu'aucune case atteignable ne soit occupé par un pion.  Dans le cas d'un fou, il faut donc vérifier sur ses deux diagonales. L'ensemble des zones atteintes est mis en evidence dans la figure \ref{fig:Fou}.
+            \[x_{i, j} = F \AND \]
+            \[(\forall k~(0 \leq i-k < i) \AND (0 \leq j-k < j) ~ x_{i-k, j-k} = V \AND \]
+            \[\forall k~(i < i+k < n) \AND (0 \leq j-k < j) ~ x_{i+k, j-k} = V \AND \]
+            \[\forall k~(0 \leq i-k < i) \AND (j < j+k < n) ~ x_{i-k, j+k} = V \AND \]
+            \[\forall k~(i < i+k < n) \AND (j < j+k < n) ~ x_{i+k, j+k} = V)\]
+
+          \paragraph{Cavalier~:}
+             La fonction ($CavMvt(x_{i, j})$) ci-après vérifie également que le déplacement d'un cavalier depuis la case $x_{i, j}$ ne menacera pas une autre pièce. Le mouvement du cavalier est un peu particulier car c'est la seul pièce qui peut "traverser" d'autre pièces. L'ensemble des zones atteintes est mis en evidence dans la figure \ref{fig:Cavalier}.
+             \[x_{i, j} = C \TQ \]
+             \[\forall k_{1}, k_{2} \in \{-1, -2, 1, 2\} \TQ (|k_{1}| \neq |k_{2}|) \AND (0 \leq i+k_{1} < n) \AND (0 \leq i+k_{2} < n) \AND x_{i+k_{1}, j+k_{2}} = V\]
+             
+         \paragraph{Vide~:}
+            Si une case est vide, elle est bien évidemment considérée comme correcte.  On a donc la fonction $VideMvt(x_{i, j})$ tel que:
+            \[x_{i,j} = V\]
+    
+    
+    \subsection{Question 2: Problème de domination}
+        Pour rappel, le problème de domination consiste à trouver une disposition où toutes les pièces sont menacées par au mions une autre pièce. Ce qui revient à dire, que pour toute pièce disposée sur l'échiquier, il n'y a aucune case qui n'est pas occupée ou menacée par une autre. Comme pour le problème d'indépendance, les variables et le domaine est définit en point \ref{echec_variable} et \ref{echec_domaine}. Il en est de même pour les contraintes où il ne reste plus qu'a définir les fonctions permettant de définir le role que devra avoir une case donnée.
+            
+        \subsubsection{Définition des fonctions de mouvement :}
+            
+          \paragraph{Tour~:} La fonction ($TourMvt(x_{i, j})$) ci-dessous décrit le mouvement d'une tour sur l'axe verticale et horizontale. L'ensemble des zone atteinte est mis en evidence dans la figure \ref{fig:Tour}.
+            \[\exists k~(0 \leq k < n) \]
+            \[(\forall t~(i < t \leq k) \OR (k \leq t < i) \TQ x_{k, j} = T \AND (x_{t, j} = V \OR t = k)) \OR\]
+            \[(\forall t~(j < t \leq k) \OR (k \leq t < j) \TQ x_{i, k} = T \AND (x_{i, t} = V \OR t = k) \]
+            
+          \paragraph{Fou~:} La fonction ($FouMvt(x_{i, j})$) ci-dessous décrit le mouvement d'un fou sur ses deux diagonales. L'ensemble des zone atteinte est mis en evidence dans la figure \ref{fig:Fou}.
+            \[[(\exists k \TQ (0 \leq i-k < i) \AND (0 \leq j-k < j) ~ x_{i-k, j-k} = F \AND \]
+            \[\forall t \TQ (0 \leq t < i-k) \AND (0 \leq t < j-k) \AND x_{i-t, j-t} = V ) \OR \]
+            \[(\exists k \TQ (0 \leq i+k < i) \AND (0 \leq j-k < j) ~ x_{i+k, j-k} = F \AND \]
+            \[\forall t \TQ (0 \leq t < i+k) \AND (0 \leq t < j-k) \AND x_{i+t, j-t} = V )\]
+            \[(\exists k \TQ (0 \leq i-k < i) \AND (0 \leq j+k < j) ~ x_{i-k, j+k} = F \AND \]
+            \[\forall t \TQ (0 \leq t < i-k) \AND (0 \leq t < j+k) \AND x_{i-t, j+t} = V )\]
+            \[(\exists k \TQ (0 \leq i+k < i) \AND (0 \leq j+k < j) ~ x_{i+k, j+k} = F \AND \]
+            \[\forall t \TQ (0 \leq t < i+k) \AND (0 \leq t < j+k) \AND x_{i+t, j+t} = V)]\]
+            
+          \paragraph{Cavalier~:}
+             La fonction ($CavMvt(x)$) ci-dessous décrit le mouvement 
+             d'un fou sur ses deux diagonales. L'ensemble des zone atteinte est mis en evidence dans la figure \ref{fig:Fou}.
+                \[\exists k_{1}, k_{2} \in \{-1, -2, 1, 2\} \TQ (|k_{1}| \neq |k_{2}|) \AND (0 \leq i+k_{1} < n) \AND (0 \leq i+k_{2} < n) \OR x_{i+k_{1}, j+k_{2}} = C\]
+                
+          \paragraph{Vide~:}
+            Les cases vides ne sont pas accepté s'il elle ne sont pas attaquée.  Cependant, on peut voir le problème dans l'autre sens et donne à la fonction "$VideMvt$" le rôle de vérifier que la case actuelle est différente du vide.  Si tel est le cas, elle sera quoi qu'il arrive valide.  On peut donc écrire:
+            \[x_{i, j} \neq V\]
+
+    \subsection{Question 3: Implémentation informatique et résultats}
+        Dans la section présente, les différents exemples présent dans l'énnoncé seront reproduit et la quantité de solutions possible pour ces exemples sera donnée.\\
+        En plus des paramètres demandé dans l'énnoncé, il est possible de passer d'autres options au démarrage de l'application~:
+        \begin{description}
+            \item[-h] permet d'afficher tous les paramètres pouvant être passé en paramètre au démarrage de l'application;
+            \item[-all] permet d'afficher tous des résultats;
+            \item[-utf8] permet d'afficher la(les) solution(s) sous une forme plus agréable à l'oeil;
+            \item[-debug] montre quelques informations qui aident à voir ce qu'il se passe;
+            \item[-time] permet de voir le temps d'exécution du programme;
+            \item[opti] peut suivre un des pion (\verb|-c|, \verb|-f| ou \verb|-t|) et indique qu'on aimerait que le programme optimise ce nombre.
+        \end{description}
+        
+        \subsubsection{Résultat du problème d'indépendance}
+            Pour obtenir les résultats de l'exemple du problème d'indépendance, qui contenait un fou, un cavalier et deux tours sur un échiquier de trois cases de largeur, la commande à taper est la suivante~:
+            \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -i -n 3 -f 1 -c 1 -t 1
+            \end{verbatim}
+            Il est possible que le résultat affiché ne corresponde pas à celui présent dans l'énnoncé.  Pour remédier à cela, on peut demande au programme d'afficher toutes les solutions via la commande suivante:
+            \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -i -n 3 -f 1 -c 1 -t 1 -all
+            \end{verbatim}
+            Parmis les 16 résultats obtenus, on retrouve bien celui présenté dans l'exemple.
+            \begin{verbatim}
+              ***
+              **T
+              FC*
+            \end{verbatim}
+            \begin{tcolorbox}[title=Remarques :]
+                Beaucoup de réponses pourraient être considérées comme équivalantes car la disposition des pièces sur l'échiquier est la même à une ou deux rotations près.\\\\
+                \begin{minipage}{.2\linewidth}
+                  \begin{verbatim}
+        ***
+        **T
+        FC*
+                  \end{verbatim}
+                \end{minipage}
+                \hfill
+                \begin{minipage}{.2\linewidth}
+                  \begin{verbatim}
+        *T*
+        **C
+        **F
+                  \end{verbatim}
+                \end{minipage}
+                \hfill
+                \begin{minipage}{.2\linewidth}
+                  \centering
+                  \begin{verbatim}
+        *CF
+        T**
+        ***
+                  \end{verbatim}
+                \end{minipage}
+                \hfill
+                \begin{minipage}{.2\linewidth}
+                  \centering
+                  \begin{verbatim}
+        F**
+        C**
+        *T*
+                  \end{verbatim}
+                \end{minipage}
+            \end{tcolorbox}
+            Un autre exemple était également présent dans l'énnoncé.  Voici un résultat équivalent à celui présenté en exemple (pour avoir la même réponse que celle présenté, il faut affiché tous les résultats en rajoute \verb|-all| à la fin de la commande).
+            \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -i -n 4 -t 2 -f 1 -c 2
+**T*
+*T**
+C***
+F**C
+            \end{verbatim}
+            On peut également remarquer qu'en cas de problème insoluble comme celui suggéré par la commande ci-après, le programme affiche bien un message indiquant qu'aucun résultat n'est possible:
+            \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -i -n 4 -t 5
+pas de solution
+            \end{verbatim}
+            
+        \subsubsection{Résultat du problème de domination}
+            Pour obtenir les résultats de l'exemple du problème de domination, qui contenait un fou, un cavalier et une tour sur une échiquier de trois cases de largeur, la commande à taper est la suivante~:
+            \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -d -n 3 -f 1 -c 1 -t 2 -all
+            \end{verbatim}
+            Parmis les 348 résultats obtenus, on retrouve bien celui présenté dans l'exemple.
+            \begin{verbatim}
+              T*F
+              *T*
+              **C
+            \end{verbatim}
+        
+    \subsection{Question Bonus: Création d'un pion personnalisé}
+        Toutes les classes permettant de gérer des pions sont appelées "Manager".  En effet, cette classe va "manager" les pions pour les positionner correctement.
+
+        \paragraph{Création de la classe}
+            Pour implémenter son propre pion, il faut créer une classe qui devra hériter soit de \verb|PionManager|, soit de \verb|OpaquePionManager|. La différence entre les deux se situe simplement dans le fait qu'un pion "opaque" ne peut pas traverser les autres pions. Par exemple une tour est un pion opaque contrairement au cavalier.\\
+
+            La classe qui permettra de gérer ce nouveau pion devra définir une méthode et un constructeur. Pour les classes "opaques", une méthode en plus devra être intégrée.
+
+            \textbf{Canvas~:}\\
+            Le canvas de base pour créer une class est le suivant:
+\begin{verbatim}
+public class TestManager extends OpaquePionManager {
+
+    public TestManager(NbrPions nbrPion, int tailleEchec) {
+        super("nomPion", nbrPion, tailleEchec, 'S', '8');
+    }
+
+    @Override
+    public ArrayList<Integer[]> getAccessibleCase(int currentLigne,
+        int currentColonne) {
+        // Code
+    }
+
+    /**
+     * Uniquement pour les cases opaques
+     */
+    @Override
+    protected ArrayList<Integer[]> getEmptyCase(int currentLigne, 
+        int currentColonne, int currentDecalageLigne, int currentDecalageColonne) {
+        // Code
+    }
+
+}
+\end{verbatim}
+
+            Le constructeur doit appeller le constructeur parent en précisant le nom du pion (le paramètre \verb|"nomPion"|) (uniquement utilisé pour du débug) ainsi que le symbole qui sera utilisé pour les résultats lors de l'affichage classique ou UTF-8 (respectivement \verb|'S'| et \verb|'8'| dans cet exemple).\\
+
+            La méthode \verb|getAccessibleCase| permet de spécifier toutes les cases accèssibles par ce pion depuis les coordonnées passées en paramètre, à savoir \verb|(currentLigne, currentColonne)|.  Cette méthode retourne donc une liste de coordonnées relatives aux coordonnées passées en paramètres.\\
+
+            La méthode \verb|getEmptyCase| ne doit être définie que pour les pions "opaques".  Cette méthode prend 4 paramètres en entré qui sont respectivement: la position sur la ligne du pion que l'on observe, la position sur la colonne du pion que l'on observe, le déplacement du pion sur la ligne et le déplacement du pion sur la colonne. En d'autres mots, ces paramètres peuvent être lu deux par deux.  Les deux premiers définissent les coordonnéees du pion actuel : \verb|(currentLigne, currentColonne)|.  Les deux suivant définissent le potentiel déplacement du pion: \verb|(currentDecalageLigne, currentDecalageColonne)|. La méthode \verb|getEmptyCase| retourne la liste des cases qui doivent être vides entre \verb|(currentLigne, |\\ \verb|currentColonne)| et \verb|(currentDecalageLigne, currentDecalageColonne)| pour pouvoir être déplacé.
+
+            \paragraph{Déployer}
+                Une fois la classe crée, il faut indiquer au programme que celle-ci existe. Pour cela, il suffit de modifier la classe \verb|PionManager| et d'instancier la classe qui vient d'être crée dans la méthode \verb|initAllManager|.
+
+            \paragraph{Lecture des entrées}
+                Par défaut, le programme ne saura pas combien de pions il doit placer.  Il lit cette information directement dans les arguments utilisés pour lancer le programme.  Pour la classe que vous venez de créer, rien n'a été implémenté pour permettre de directement définir le nombre de pion qui doivent être placé. Il faut donc soit modifier la classe \verb|ReadingArguments| pour palier à cela, soit fixer cette valeur dans le programme (dans \verb|initAllManager| ou directement dans le constructeur du nouveau pion) mais il faudra alors recompiler le projet à chaque modification de cette valeur.
+      
+    \subsection{Question 4: Minimisation du nombre de cavalier}
+        Le problème est réalisable grâce au code développé pour la question 3.  Il suffit de minimiser le nomber de cavalier présent dans la matrice des variables.  Pour cela, ChocoSolver nous met à disposition la méthode \verb|model.among|.  Cette méthode permet de compter le nombre de numéro variable faisant partie d'un set de nombre passé en paramètre.  Dans le cas présent on lui indiquera le numéro représentant le cavalier en demande au solver de minimiser cette variable passé en paramètre a la méthode \verb|among|.\\
+        Pour exécuter l'exemple présenté dans l'énoncé, il faut taper l'instruction suivante~:
+        \begin{verbatim}
+java -jar Echiquier-0.1-jar-with-dependencies.jar -d -n 4 -c opti -all
+        \end{verbatim}
+        Le programme permet d'obtenir exactement la solution proposé dans l'énoncé~:
+        \begin{verbatim}
+            ****
+            *CC*
+            *CC*
+            ****
+        \end{verbatim}
+        En plus de cette réponse, il en existe d'autre : 9 au total.\\
+        \begin{tcolorbox}[title=Remarque :]
+            Le programme proposé est assez flexible que pour proposer une résolution d'une optimisation pour toute les pièces possibles dans tout les types de problème possible (de domination et d'indépendance).
+        \end{tcolorbox}
+    
+\section{Résolution de la surveillance de musée}
+
+    Le problème de surveillance de musée consiste à positionner un ensemble minimal de caméras dont la zone de surveilance est fixe de manière à ne laisser aucune zones sans surveillance.
+
+    \subsection{Définition du CSP}
+    
+      \subsubsection{Ensemble de variables :}
+          Pour ce problème, on va modéliser le plan du musée comme étant une matrice de variables. Le musée n'étant pas forcement carré, la matrice aura une longeur de $m$ et une largeur de $n$.
+        \label{musee_variable}
+        $$X = \{x_{ij}~\forall~i (0 \leq i < n)~\forall~i (0 \leq j < m) \}$$
+        Où :
+        \begin{itemize}
+          \item $n$ est la largeur du plan du musée;
+          \item $m$ est la longueur du plan du musée;
+          \item $x_{ij}$ est une case du plan du musée.
+        \end{itemize}
+
+      \subsubsection{Ensemble de domaines :}
+        Ici aussi toutes les variables ont le même domaine qui correspond à:
+        \label{musee_domaine}
+        $$D = \{D_{x}~|~x \in X\}$$ 
+        $$D_{x} = \{M, V, N, S, E, O\}$$
+        Où~:
+        \begin{itemize}
+          \item $M$ est un mur;
+          \item $V$ est une case vide;
+          \item $N$ est un capteur Nord;
+          \item $S$ est un capteur Sud;
+          \item $E$ est un capteur Est;
+          \item $O$ est un capteur Ouest.
+        \end{itemize}
+
+      \subsubsection{Ensemble des contraintes :}
+
+          \[C = \{C_{x_{i, j}}~\forall~x_{i, j} \in X\}\]
+          \[C_{x_{i, j}} = \{CavMvt(x_{i, j}) \OR TourMvt(x_{i, j}) \OR FouMvt(x_{i, j}) \OR VideMvt(x_{i, j})\}\]
+
+          \paragraph{Murs}
+              Posons une fonction $isAWall(x)$ renvoyant \verb|true| ($\top$) si $x$ est inclus dans cet ensemble et \verb|false| ($\bot$) sinon. On pourrait la définir comme suit :
+              \[isAWall(x) = x \in Walls\] % TODO : isAWall en francais ?
+              Où~:
+              \begin{itemize}
+                \item $Walls$ est l'ensemble des variables définient comme étant des murs.
+              \end{itemize}
+              Typiquement, cette fonction sert à émuler un système de variables constantes. Le contenu de l'ensemble $Walls$ est défini après le \textit{parsing} du fichier.  On peut donc écrire la contrainte suivante:
+              \[\forall x~[(isAWall(x) \AND x = M) \OR (\neg isAWall(x) \AND x \neq M)] \]
+              Cette contrainte permet donc de vérifier qu'une variable ne deviendra pas un mur et que les murs ne se "transformeront" pas en autre chose.  Il aurait également été possible de modifier le domaine de ces cases mais cela aurait compliqué la mise en place des autres contraintes.\\
+              
+          \begin{tcolorbox}[title= Remarque~:]
+            La caméra d'un type donné ne peux pas voir une caméra de son type car cela signifirait qu'il y a redondance.
+          \end{tcolorbox}
+
+          \paragraph{Nord}
+              \[ \exists k~(0 \leq k < n) \]
+              \[ \forall t~(k \leq t < i) \TQ (x_{k, j} = N \AND (x_{t, j} = V \OR x_{t, j} = E \OR x_{t, j} = O \OR t = k)) \]
+
+          \paragraph{Sud}
+              \[ \exists k~(0 \leq k < n) \]
+              \[ \forall t~(i < t \leq k) \TQ (x_{k, j} = S \AND (x_{t, j} = V \OR x_{t, j} = E \OR x_{t, j} = O \OR t = k)) \]
+
+          \paragraph{Ouest}
+              \[ \exists k~(0 \leq k < m) \]
+              \[ \forall t~(i < t \leq k) \TQ (x_{i, k} = O \AND (x_{i, t} = V \OR x_{t, j} = S \OR x_{t, j} = N \OR t = k)) \]
+
+          \paragraph{Est}
+              \[ \exists k~(0 \leq k < m) \]
+              \[ \forall t~(k \leq t < j) \TQ (x_{i, k} = E \AND (x_{i, t} = V \OR x_{t, j} = S \OR x_{t, j} = N \OR t = k)) \]
+    
+    \subsection{Implémentation et résultat}
+    
+        La commande permettant d'exécuter le programme de surveilance est la suivante~:
+        \begin{verbatim}
+java -jar Surveillance-0.1-jar-with-dependencies.jar -file exemple.txt -all
+        \end{verbatim}
+        \subsubsection{Détails sur l'implémentation}
+            Le programme doit être démarré avec un certain nombre de paramètres. Voici la liste des paramètres disponible pour l'utilisateur~:
+            \begin{description}
+              \item[-all] permet d'afficher l'ensemble des résultats;
+              \item[-utf8] permet d'afficher la(les) solution(s) sous une forme plus agréable à l'oeil;
+              \item[-debug] montre plusiurs informations qui aident à voir ce qui se passe;
+              \item[-file] permet de spécifier le chemin vers le fichier qu'on désire lire;
+              \item[-gui] permet d'ouvrir une boite de dialogue permettant de sélectionner un fichier via un gui;
+              \item[-time] affiche le temps total d'exécution;
+              \item[-fulltime] permet d'afficher régulièrement le temps d'exécution (au moins toutes les 20 secondes).
+        \end{description}
+            
+        \subsubsection{Résultats}
+            Voici la résolution de l'exemple proposé dans l'énnoncé~:\\
+            \begin{minipage}{.4\linewidth}
+              \centering
+              \begin{verbatim}
+*********
+* ***   *
+*       *
+* ** ** *
+* ** ** *
+*    ** *
+*********
+              \end{verbatim}
+            \end{minipage}
+            \begin{minipage}{.4\linewidth}
+              \centering
+              \begin{verbatim}
+6
+*********
+* ***E  *
+*      O*
+* **S** *
+*N** ** *
+*  O **N*
+*********
+              \end{verbatim}
+            \end{minipage}
+             
+            Au total ce problème possède 480 solutions (le programme met plus de 2 minutes 30 pour tout calculer).  Voici un autre exemple de résolution~:\\
+            \begin{minipage}{.4\linewidth}
+              \centering
+              \begin{verbatim}
+*********
+* *******
+*       *
+* ** ** *
+* ** ** *
+*    ** *
+*********
+              \end{verbatim}
+            \end{minipage}
+            \begin{minipage}{.4\linewidth}
+              \centering
+              \begin{verbatim}
+5
+*********
+*S*******
+*     OS*
+* ** ** *
+* **N** *
+*   O** *
+*********
+              \end{verbatim}
+            \end{minipage}
+            
+           Qui lui peut être résolu en moins de 20 secondes et qui compte au total  168 solutions différentes.
+
+\end{document}

@@ -2,3 +2,6 @@
 */nb-configuration.xml
 */nbactions-release-profile.xml
 */nbactions.xml
+Rapport/*.aux
+Rapport/*.log
+Rapport/*.toc
