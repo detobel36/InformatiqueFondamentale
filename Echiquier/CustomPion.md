@@ -3,14 +3,14 @@
 ## Introduction
 Toutes les classes permettant de gérer des pions sont appelées "Manager".  En effet, cette classe va "manager" les pions pour les positionner correctement.
 
-## Création de la class
-Pour implémenter son propre pion, il faut créer une class qui devra hérité soit de `PionManager`, soit de `OpaquePionManager`.  La différence entre les deux se situe simplement dans le fait qu'un pion "opaque" ne peut pas traverser les autres pions.  Par exemple une tour est un pion opaque contrairement au cavalier.
+## Création de la classe
+Pour implémenter son propre pion, il faut créer une classe qui devra hérité soit de `PionManager`, soit de `OpaquePionManager`.  La différence entre les deux se situe simplement dans le fait qu'un pion "opaque" ne peut pas traverser les autres pions.  Par exemple une tour est un pion opaque contrairement au cavalier.
 
-La classe qui permettra de gérer ce nouveau pion devra définir une méthode et un constructeur.  Pour les class opaque, une méthode en plus devra être intégré.
+La classe qui permettra de gérer ce nouveau pion devra définir une méthode et un constructeur.  Pour les classe opaque, une méthode en plus devra être intégré.
 
 
 **Canvas:**                           
-Le canvas de base pour créer une class est le suivant:           
+Le canvas de base pour créer une classe est le suivant:           
 ```java        
 public class TestManager extends OpaquePionManager {
 
