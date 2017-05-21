@@ -9,7 +9,7 @@ import org.chocosolver.solver.variables.IntVar;
 /**
  * Chaque case représente une partie du plan
  * 
- * @author Rémy
+ * @author Detobel
  */
 public abstract class CaseManager {
     

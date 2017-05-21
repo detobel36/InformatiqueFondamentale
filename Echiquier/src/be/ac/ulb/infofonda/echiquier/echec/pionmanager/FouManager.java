@@ -20,10 +20,8 @@ public class FouManager extends OpaquePionManager {
             final int currentColonne) {
         final ArrayList<Integer[]> result = new ArrayList<>();
         
-        // TODO vérifier que l'on ne prend pas trop de nombre et si l'on ne peut
-        // pas réduire
-        int maxValue = Math.max(currentLigne, currentColonne);
-        for(int deplacement = -_tailleEchec; deplacement < _tailleEchec; ++deplacement) {
+        final int minValue = Math.min(currentLigne, currentColonne);
+        for(int deplacement = -minValue; deplacement < _tailleEchec-minValue; ++deplacement) {
             Integer[] depl = getDeplacement(currentLigne, currentColonne, true, deplacement);
             if(depl != null) {
                 result.add(depl);
@@ -102,16 +100,6 @@ public class FouManager extends OpaquePionManager {
             final int emptyCol = currentColonne + signeCol * deplacement;
             res.add(getCoord(emptyLigne, emptyCol));
         }
-//        
-//        System.out.println("Cases vide pour le déplacement de (" + currentLigne + 
-//                ", " + currentColonne + ") et (" + currentDecalageLigne + ", " + 
-//                currentDecalageColonne + ") ");
-//        String strRes = "";
-//        for(Integer[] dep : res) {
-//            strRes += "(" + dep[0] + ", " + dep[1] + ") ";
-//        }
-//        System.out.println(strRes);
-//        
         
         return res;
     }
